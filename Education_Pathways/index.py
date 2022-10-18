@@ -6,7 +6,8 @@ import os
 
 import pandas as pd
 df = pd.read_csv("resources/courses.csv")
-
+df_hss = pd.read_csv("resources/hss_data.csv")
+df_cs = pd.read_csv("resources/cs_data.csv")
 
 import config
 app = Flask(__name__, static_folder='frontend/build')
@@ -45,6 +46,43 @@ def search_course_by_code(s):
         }
         res.append(res_d)
     return res
+
+class HssEligibility(Resource):
+    def __is_course_hss(self, course_code):
+        course_set = set(df_hss["colummn"])
+        return course_code in course_set
+
+    def get(self):
+        input = request.args.get('input')
+        res = self.__is_course_hss(input)
+        try:
+            resp = jsonify(res)
+            resp.status_code = 200
+            return resp
+        except Exception as e:
+            resp = jsonify({'error': str(e)})
+            resp.status_code = 400
+            return resp
+
+class CsEligibility(Resource):
+    def __is_course_cs(self, course_code):
+        courses = set(df_cs["colummn"])
+        for course in courses:
+            if course in course_code:
+                return True
+        return False
+
+    def get(self):
+        input = request.args.get('input')
+        res = self.__is_course_cs(input)
+        try:
+            resp = jsonify(res)
+            resp.status_code = 200
+            return resp
+        except Exception as e:
+            resp = jsonify({'error': str(e)})
+            resp.status_code = 400
+            return resp
 
 class SearchCourse(Resource):
     def get(self):
@@ -120,6 +158,8 @@ rest_api = Api(app)
 rest_api.add_resource(SearchCourse, '/searchc')
 # rest_api.add_resource(controller.ShowCourse, '/course/details')
 rest_api.add_resource(ShowCourse, '/course/details')
+rest_api.add_resource(HssEligibility, '/check/hss')
+rest_api.add_resource(CsEligibility, '/check/cs')
 
 
 @app.route("/", defaults={'path': ''})
@@ -133,8 +173,8 @@ def serve(path):
 
 
 if __name__ == '__main__':
-    # app.run(host='0.0.0.0', port=5000, extra_files=['app.py', 'controller.py', 'model.py'])
-    app.run(threaded=True, port=5000)
+    # app.run(host='0.0.0.0', port=5050, extra_files=['app.py', 'controller.py', 'model.py'])
+    app.run(threaded=True, port=5050)
     # with open("test.json") as f:
     #     data = json.load(f)
     # for i in range(75):
