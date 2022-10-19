@@ -1,14 +1,13 @@
-import React, { Component } from "react";
-import { Cookies, useCookies } from 'react-cookie'
+import React, { useState } from "react";
 
-
-function CourseProfile() {
-  const [cookies] = useCookies(['cp'])
+function CourseProfile(props) {
+  console.log(props.courseProfile);
+  const courseProfileList = props.courseProfile.map(course => {return (<li>{course}</li>)});
 
   return (
     <div>
       <h1>Course Profile</h1>
-      <p>{cookies.cp}</p>
+      <div>{courseProfileList}</div>
     </div>
   );
 }
