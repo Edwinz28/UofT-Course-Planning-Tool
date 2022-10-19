@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/Row'
 import requisite_label from './img/requisite-label.png'
 import empty_star from './img/star.png'
 import API from '../api';
+import data from './course_profile_mock.json'
 
 let star = empty_star;
 
@@ -28,7 +29,7 @@ class CourseDescriptionPage extends Component {
       exclusions: "",
       starred: false,
       graphics: [],
-      username: localStorage.getItem('username')
+      username: localStorage.getItem('username'),
     }
   }
 
@@ -106,6 +107,7 @@ class CourseDescriptionPage extends Component {
     }
   }
 
+
 	render() {
 		return(
 
@@ -118,6 +120,10 @@ class CourseDescriptionPage extends Component {
             {/* <Col xs={4}>
               <img src={star} onClick={this.check_star} alt="" />
             </Col> */}
+            <Col className="col-item">
+              <h3>Course Profile</h3>
+              <button className={"syllabus-link"} onClick={() => {this.props.save(`${this.state.course_code} : ${this.state.course_name}`)}}>Save</button>
+            </Col>
           </Row>
           <Row>
             <Col className="col-item">
@@ -173,4 +179,4 @@ class CourseDescriptionPage extends Component {
 	}
 }
 
-export default CourseDescriptionPage
+export default CourseDescriptionPage;
