@@ -45,7 +45,7 @@ export default class NavbarComp extends Component {
   }
 
   saveToCourseProfile = (course_title) => {
-    console.log(`save ${course_title} to courseProfile state var~`)
+    // console.log(`save ${course_title} to courseProfile state var~`)
     this.props.setCourseProfile([...this.props.courseProfile, course_title]);
   };
 

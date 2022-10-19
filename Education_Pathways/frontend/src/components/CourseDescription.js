@@ -15,7 +15,6 @@ class CourseDescriptionPage extends Component {
 
   constructor(props){
     super(props)
-    console.log(`hEYYYYY: ${this.props}`)
 
     this.state = {
       course_code: "",
