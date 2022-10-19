@@ -1,11 +1,13 @@
 # this is the flask core
 
+import pickle
 from flask import Flask, send_from_directory, jsonify, request
 from flask_restful import Api,Resource, reqparse
 import os
 
 import pandas as pd
 df = pd.read_csv("resources/courses.csv")
+df_certificate = pd.read_csv("resources/course_certificate.csv")
 
 
 import config
@@ -33,10 +35,13 @@ def search_course_by_code(s):
     res = []
     for i, course_id in enumerate(course_ids):
         d = df.iloc[course_id].to_dict()
+        d_certificate = df_certificate.loc[df_certificate['Code'] == d['Code']]
         res_d = {
             '_id': i,
             'code': d['Code'],
             'name': d['Name'],
+            # 'certificate': d['Certificate'],
+            'certificate': d_certificate['Certificate'].item(),
             'description': "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.",
             'syllabus': "Course syllabus here.",
             'prereq': ['APS101H1, ECE101H1'],
@@ -81,6 +86,7 @@ class ShowCourse(Resource):
     def get(self):
         code = request.args.get('code')
         courses = search_course_by_code(code)
+        print(courses, flush = True)
         if len(courses) == 0:
             resp = jsonify({'message': f"Course {code} doesn't exist"})
             resp.status_code = 404

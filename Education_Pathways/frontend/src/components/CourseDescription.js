@@ -42,29 +42,7 @@ class CourseDescriptionPage extends Component {
         console.log(res.data.course)
         this.setState({course_code: res.data.course.code})
         this.setState({course_name: res.data.course.name})
-        let engineering_certificate_list = {
-          "APS360H1" : 'Artificial Intelligence Certificate',
-
-          "ECE345H1" : 'Artificial Intelligence Certificate',
-          "ECE358H1" : 'Artificial Intelligence Certificate',
-          "CSC263H1" : 'Artificial Intelligence Certificate',
-          "MIE335H1" : 'Artificial Intelligence Certificate',
-
-          "ROB311H1" : 'Artificial Intelligence Certificate',
-          "CSC384H1" : 'Artificial Intelligence Certificate',
-          "ECE421H1" : 'Artificial Intelligence Certificate',
-          "CSC311H1" : 'Artificial Intelligence Certificate',
-          "ROB313H1" : 'Artificial Intelligence Certificate',
-          "MIE424H1" : 'Artificial Intelligence Certificate',
-          "MIE369H1" : 'Artificial Intelligence Certificate',
-
-          "ECE472H1" : 'Engineering Business Certificate',
-
-          "JRE300H1" : 'Engineering Business Certificate',
-          "JRE410H1" : 'Engineering Business Certificate',
-          "JRE420H1" : 'Engineering Business Certificate',
-        }
-        this.setState({certificate: engineering_certificate_list[res.data.course.code]})
+        this.setState({certificate: res.data.course.certificate})
         this.setState({course_description : res.data.course.description})
         this.setState({graph: res.data.course.graph})
         let prereq_len = res.data.course.prereq.length
