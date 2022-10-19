@@ -1,4 +1,6 @@
-from app import app
+import pytest
+
+from index import app
 from minor import check_course_in_minor
 from flask.testing import FlaskClient
 

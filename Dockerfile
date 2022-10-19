@@ -7,7 +7,7 @@ RUN pip3 install -r requirements.txt
 
 ENV FLASK_ENV development
 ENV FLASK_RUN_HOST=0.0.0.0
-EXPOSE 5000
+EXPOSE 5050
 
 WORKDIR Education_Pathways
 

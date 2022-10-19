@@ -1,6 +1,8 @@
 import axios from 'axios';
 
 export default axios.create({
-  baseURL: "http://localhost:5000/"
-//   baseURL: "http://host.docker.internal:5000/"
+
+  // baseURL: "https://lab3-docker.herokuapp.com/"
+   baseURL: "http://localhost:5050/"
+
 });
