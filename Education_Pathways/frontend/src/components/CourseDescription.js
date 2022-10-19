@@ -7,10 +7,15 @@ import Row from 'react-bootstrap/Row'
 import requisite_label from './img/requisite-label.png'
 import empty_star from './img/star.png'
 import API from '../api';
+import { instanceOf } from 'prop-types';
+import { withCookies, Cookies} from 'react-cookie'
 
 let star = empty_star;
 
 class CourseDescriptionPage extends Component {
+  static propTypes = {
+    cookies: instanceOf(Cookies).isRequired
+  };
 
   constructor(props){
     super(props)
@@ -28,7 +33,7 @@ class CourseDescriptionPage extends Component {
       exclusions: "",
       starred: false,
       graphics: [],
-      username: localStorage.getItem('username')
+      username: localStorage.getItem('username'),
     }
   }
 
@@ -105,6 +110,17 @@ class CourseDescriptionPage extends Component {
     }
   }
 
+  saveCourse = () => {
+    /* Save course to course profile cookie */
+    const { cookies }  = this.props;
+    // let cp = cookies.get('cp');
+    // console.log(`saveCourse: Printing out cp's value: ${cp}`)
+    // cp.add(this.state.course_name);
+    
+    cookies.set('cp', this.state.course_name, { path: "/" });
+  }
+
+
 	render() {
 		return(
 
@@ -117,6 +133,10 @@ class CourseDescriptionPage extends Component {
             {/* <Col xs={4}>
               <img src={star} onClick={this.check_star} alt="" />
             </Col> */}
+            <Col className="col-item">
+              <h3>Course Profile</h3>
+              <button className={"syllabus-link"} onClick={this.saveCourse}>Save</button>
+            </Col>
           </Row>
           <Row>
             <Col className="col-item">
@@ -168,4 +188,4 @@ class CourseDescriptionPage extends Component {
 	}
 }
 
-export default CourseDescriptionPage
+export default withCookies(CourseDescriptionPage);
