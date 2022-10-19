@@ -1,19 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import NavbarComp from "./components/Navbar.js";
-import ReactComp from "./components/Footer.js";
+import FooterComp from "./components/Footer.js";
 import './App.css';
 
 
 function App() {
+  const [ courseProfile, setCourseProfile ] = useState([]);
 
   return (
     <div>
     <div className="App">
-      <NavbarComp />
+      <NavbarComp courseProfile={courseProfile} setCourseProfile={setCourseProfile} />
     </div>
 
     <div className="App">
-    <ReactComp />
+      <FooterComp/>
     </div>
     </div>
   );
