@@ -10,6 +10,7 @@ import CourseDescriptionPage from "./CourseDescription";
 // import SignUp from './SignUp'
 import SearchResultDisplay from './ResultDisplay'
 import CourseProfile from './CourseProfile';
+import AdminPanel from './AdminPanel'
 
 function CourseDescription (props) {
   let query = useQuery();
@@ -60,7 +61,6 @@ export default class NavbarComp extends Component {
                 Education Pathways
               </Nav.Link>
             </Navbar.Brand>
-
             <Navbar.Collapse>
               <Nav>
                 <Nav.Link as={Link} to="/about">
@@ -105,14 +105,15 @@ export default class NavbarComp extends Component {
             <Route path="/course_profile">
               <CourseProfile courseProfile={this.props.courseProfile} />
             </Route>
+            <Route exact
+              path="/Admin/:code"
+              render={props =>(<AdminPanel {...props} />)}>
+            </Route>
             <Route path="/">
               <SearchResultDisplay />
             </Route>
           </Switch>
         </div>
-        
-        
-    
       </Router>
     );
   }

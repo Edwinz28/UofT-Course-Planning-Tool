@@ -40,3 +40,12 @@
   margin-right: 1%;
   padding-left: 2%;
 }
+
+.textarea-input {
+  width: 40%;
+  height: 6em;
+  border-radius: 15px;
+  border: 2px solid #c4c4c4;
+  margin-right: 1%;
+  padding-left: 2%;
+}

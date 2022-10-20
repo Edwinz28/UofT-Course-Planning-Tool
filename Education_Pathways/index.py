@@ -139,7 +139,6 @@ class SearchCourse(Resource):
     def get(self):
         input = request.args.get('input')
         courses = search_course_by_code(input)
-        # courses =[{'_id': 1, 'code': 'ECE444', 'name': 'SE'}, {'_id': 2,'code': 'ECE333', 'name': 'ur mom'}]
         if len(courses) > 0:
             try:
                 resp = jsonify(courses)
@@ -201,7 +200,6 @@ class ShowCourse(Resource):
             resp = jsonify({'error': 'something went wrong'})
             resp.status_code = 400
             return resp
-
 
 # API Endpoints
 rest_api = Api(app)

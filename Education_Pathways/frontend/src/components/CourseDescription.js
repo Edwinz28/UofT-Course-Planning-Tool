@@ -33,8 +33,6 @@ class CourseDescriptionPage extends Component {
     }
   }
 
-
-
   componentDidMount() {
     API.get(`/course/details?code=${this.props.match.params.code}`, {
       code: this.props.course_code
@@ -93,11 +91,8 @@ class CourseDescriptionPage extends Component {
 
 
     })
-
-
     console.log("new state: ", this.state)
   }
-
 
   openLink = () => {
     const newWindow = window.open(this.state.syllabus, '_blacnk', 'noopener,noreferrer');
@@ -109,7 +104,6 @@ class CourseDescriptionPage extends Component {
 
 	render() {
 		return(
-
       <div className="page-content">
         <Container className="course-template">
           <Row float="center" className="course-title">
@@ -135,7 +129,13 @@ class CourseDescriptionPage extends Component {
             </Col>
             <Col className="col-item">
               <h3>Past Tests and Syllabi</h3>
-              <button className={"syllabus-link"} onClick={this.openLink}>View</button>
+              <button className={"link"} onClick={this.openLink}>View</button>
+            </Col>
+            <Col className="col-item">
+              <h3>Edit Information (Admin)</h3>
+              <a href={"/Admin/" + this.state.course_code}>
+                <button className={"link"}>Edit</button>
+              </a>
             </Col>
           </Row>
           <Row className="col-item course-description">
@@ -169,7 +169,6 @@ class CourseDescriptionPage extends Component {
           </Row>
         </Container>
       </div>
-
 		)
 	}
 }
