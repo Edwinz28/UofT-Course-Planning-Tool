@@ -1,13 +1,17 @@
 # this is the flask core
+import os
+import json
+import pandas as pd
 
 from flask import Flask, send_from_directory, jsonify, request
 from flask_restful import Api,Resource, reqparse
-import os
 
-import pandas as pd
 df = pd.read_csv("resources/courses.csv")
 df_hss = pd.read_csv("resources/hss_data.csv")
 df_cs = pd.read_csv("resources/cs_data.csv")
+
+with open('resources/user_reviews.json') as json_file:
+    course_reviews_dict = json.load(json_file)
 
 import config
 app = Flask(__name__, static_folder='frontend/build')
@@ -46,6 +50,53 @@ def search_course_by_code(s):
         }
         res.append(res_d)
     return res
+
+class UserReviews(Resource):
+    def __update_json(self):
+        with open("resources/user_reviews.json", "w") as write_file:
+            json.dump(course_reviews_dict, write_file, indent=4)
+
+    def get(self):
+        course_code = request.args.get('course_code')
+        reviews = course_reviews_dict.get(course_code, None)
+        if reviews:
+            try:
+                resp = jsonify(reviews)
+                resp.status_code = 200
+                return resp
+            except Exception as e:
+                resp = jsonify({'error': str(e)})
+                resp.status_code = 400
+                return resp
+        else:
+            resp = jsonify({'error': f"No entry for the queries course code {course_code}"})
+            resp.status_code = 400
+            return resp
+    
+    def post(self):
+        user_name = request.args.get('user_name')
+        review = request.args.get('review')
+        course_code = request.args.get('course_code')
+        if user_name is None:
+            resp = jsonify({'error': f"Key 'user_name' not specified"})
+            resp.status_code = 400
+            return resp    
+        elif review is None:
+            resp = jsonify({'error': f"Key 'review' not specified"})
+            resp.status_code = 400
+            return resp          
+        elif course_reviews_dict.get(course_code, None):
+            course_reviews_dict[course_code].append({"name": user_name, 
+                                                     "review": review})
+            self.__update_json()
+            resp = jsonify({'result': f'User review added to {course_code}'})
+            resp.status_code = 200
+            return resp
+        else:
+            resp = jsonify({'error': f'Course code does not exist {course_code}'})
+            resp.status_code = 400
+            return resp            
+            
 
 class HssEligibility(Resource):
     def __is_course_hss(self, course_code):
@@ -158,9 +209,9 @@ rest_api = Api(app)
 rest_api.add_resource(SearchCourse, '/searchc')
 # rest_api.add_resource(controller.ShowCourse, '/course/details')
 rest_api.add_resource(ShowCourse, '/course/details')
+rest_api.add_resource(UserReviews, '/course/reviews')
 rest_api.add_resource(HssEligibility, '/check/hss')
 rest_api.add_resource(CsEligibility, '/check/cs')
-
 
 @app.route("/", defaults={'path': ''})
 @app.route('/<path:path>')
