@@ -174,7 +174,7 @@ class ShowCourse(Resource):
     def get(self):
         code = request.args.get('code')
         courses = search_course_by_code(code)
-        print(courses, flush = True)
+        # print(courses, flush = True)
         if len(courses) == 0:
             resp = jsonify({'message': f"Course {code} doesn't exist"})
             resp.status_code = 404
