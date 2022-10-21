@@ -9,6 +9,7 @@ from flask_restful import Api,Resource, reqparse
 df = pd.read_csv("resources/courses.csv")
 df_hss = pd.read_csv("resources/hss_data.csv")
 df_cs = pd.read_csv("resources/cs_data.csv")
+df_cs_exceptions = pd.read_csv("resources/cs_exceptions_data.csv")
 
 with open('resources/user_reviews.json') as json_file:
     course_reviews_dict = json.load(json_file)
@@ -118,9 +119,11 @@ class HssEligibility(Resource):
 class CsEligibility(Resource):
     def __is_course_cs(self, course_code):
         courses = set(df_cs["colummn"])
+        course_exceptions = set(df_cs_exceptions["colummn"])
         for course in courses:
             if course in course_code:
-                return True
+                if course_code not in course_exceptions: return True
+                else: break
         return False
 
     def get(self):
