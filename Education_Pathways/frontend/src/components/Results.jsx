@@ -17,6 +17,7 @@ class Result extends Component{
     this.state = {
       course_code : this.props.course_code,
       course_name: this.props.course_name,
+      certificate: this.props.certificate,
       division: "Division of Computer Engineering",
       faculty: "Faculty of Applied Science and Engineering",
       starred: false,
@@ -41,6 +42,7 @@ class Result extends Component{
             <Col>
                 <h5>{this.state.course_name}</h5>
             </Col>
+            <Col>{this.state.certificate}</Col>
             <Col>{this.state.division}</Col>
             <Col>{this.state.faculty}</Col>
             {/* <Col><img src={star} alt=""/></Col> */}
