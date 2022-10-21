@@ -41,6 +41,7 @@ class CourseDescriptionPage extends Component {
         console.log(res.data.course)
         this.setState({course_code: res.data.course.code})
         this.setState({course_name: res.data.course.name})
+        this.setState({certificate: res.data.course.certificate})
         this.setState({course_description : res.data.course.description})
         this.setState({graph: res.data.course.graph})
         let prereq_len = res.data.course.prereq.length
@@ -126,6 +127,10 @@ class CourseDescriptionPage extends Component {
             <Col className="col-item">
               <h3>Department</h3>
               <p>{this.state.department}</p>
+            </Col>
+            <Col className="col-item">
+              <h3>Certificate</h3>
+              <p>{this.state.certificate}</p>
             </Col>
             <Col className="col-item">
               <h3>Past Tests and Syllabi</h3>
