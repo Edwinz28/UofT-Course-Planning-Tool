@@ -112,7 +112,7 @@ class CourseDescriptionPage extends Component {
         } else {
           this.setState({exclusions : res.data.course.exclusion})
         }
-        let syllabus_link = "http://courses.skule.ca/course/" + this.props.code
+        let syllabus_link = "http://courses.skule.ca/course/" + this.state.course_code
         this.setState({syllabus : syllabus_link})
 
         let temp_graph = []
@@ -179,7 +179,7 @@ class CourseDescriptionPage extends Component {
               <button className={"link"} onClick={this.openLink}>View</button>
             </Col>
             <Col className="col-item">
-              <h3>Edit Information (Admin)</h3>
+              <h3>Edit Information</h3>
               <a href={"/Admin/" + this.state.course_code}>
                 <button className={"link"}>Edit</button>
               </a>
