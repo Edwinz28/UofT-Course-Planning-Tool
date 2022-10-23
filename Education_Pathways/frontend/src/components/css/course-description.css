@@ -95,3 +95,12 @@ p {
   justify-content: center;
   margin-bottom: 2%;
 }
+
+textarea.md-textarea-scroll{
+  overflow-y: visible;
+}
+textarea.md-textarea {
+  padding: 0;
+  resize: none;
+  min-height: 3rem;
+}

@@ -47,7 +47,7 @@ def search_course_by_code(s):
             'code': d['Code'],
             'name': d['Name'],
             # 'certificate': d['Certificate'],
-            'certificate': d_certificate['Certificate'].item(),
+            # 'certificate': d_certificate['Certificate'].item(),
             'description': "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.",
             'syllabus': "Course syllabus here.",
             'prereq': ['APS101H1, ECE101H1'],
@@ -65,7 +65,7 @@ class UserReviews(Resource):
     def get(self):
         course_code = request.args.get('course_code')
         reviews = course_reviews_dict.get(course_code, None)
-        if reviews:
+        if reviews is not None:
             try:
                 resp = jsonify(reviews)
                 resp.status_code = 200
@@ -75,7 +75,7 @@ class UserReviews(Resource):
                 resp.status_code = 400
                 return resp
         else:
-            resp = jsonify({'error': f"No entry for the queries course code {course_code}"})
+            resp = jsonify({'error': f"No entry for the queried course code {course_code}"})
             resp.status_code = 400
             return resp
     
@@ -90,8 +90,8 @@ class UserReviews(Resource):
         elif review is None:
             resp = jsonify({'error': f"Key 'review' not specified"})
             resp.status_code = 400
-            return resp          
-        elif course_reviews_dict.get(course_code, None):
+            return resp
+        elif course_reviews_dict.get(course_code, None) is not None:
             course_reviews_dict[course_code].append({"name": user_name, 
                                                      "review": review})
             self.__update_json()

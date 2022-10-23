@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './css/course-description.css'
 import 'bootstrap/dist/css/bootstrap.css';
+import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
@@ -29,11 +30,39 @@ class CourseDescriptionPage extends Component {
       exclusions: "",
       starred: false,
       graphics: [],
+      reviewer_name: "",
+      review: "",
+      existing_reviews: [],
       username: localStorage.getItem('username'),
     }
+
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
+  handleChange(event) {
+    this.setState({[event.target.name]: event.target.value})
+  }
+
+  handleSubmit(event) {
+    event.preventDefault()
+    // TODO backend call
+    console.log(this.state.reviewer_name, this.state.review)
+    console.log(API.post(`/course/reviews?course_code=${this.state.course_code}&user_name=${this.state.reviewer_name}&review=${this.state.review}`))
+    window.location.reload(false)
+  }
+  
   componentDidMount() {
+    API.get(`/course/reviews?course_code=${this.props.match.params.code}`, {
+      code: this.props.course_code
+    })
+      .then(res => {
+        console.log(res.data)
+        this.setState({existing_reviews: res.data})
+        console.log(this.state.existing_reviews)
+        console.log(this.state.existing_reviews.length)
+      })
+
     API.get(`/course/details?code=${this.props.match.params.code}`, {
       code: this.props.course_code
     })
@@ -102,8 +131,21 @@ class CourseDescriptionPage extends Component {
     }
   }
 
-
 	render() {
+    let reviews;
+    if (this.state.existing_reviews.length > 0) {
+      reviews = this.state.existing_reviews.map((item, i) => (
+                <Container className="course-template">
+                  <Card style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                    <Card.Body style={{ width: 1000, height: 150 }}>
+                      <Card.Title> {item.name} </Card.Title>
+                      <Card.Text> {item.review} </Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Container> ))
+    } else {
+      reviews = <p> No reviews have been left for this course, be the first! </p>
+    }
 		return(
       <div className="page-content">
         <Container className="course-template">
@@ -116,7 +158,7 @@ class CourseDescriptionPage extends Component {
             </Col> */}
             <Col className="col-item">
               <h3>Course Profile</h3>
-              <button className={"syllabus-link"} onClick={() => {this.props.save(`${this.state.course_code} : ${this.state.course_name}`)}}>Save</button>
+              <button className={"link"} onClick={() => {this.props.save(`${this.state.course_code} : ${this.state.course_name}`)}}>Save</button>
             </Col>
           </Row>
           <Row>
@@ -144,8 +186,10 @@ class CourseDescriptionPage extends Component {
             </Col>
           </Row>
           <Row className="col-item course-description">
-            <h3>Course Description</h3>
-            <p>{this.state.course_description}</p>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+              <h3>Course Description</h3>
+              <p>{this.state.course_description}</p>
+            </div>
           </Row>
           <Row className="col-item course-requisite">
             <Row>
@@ -172,6 +216,36 @@ class CourseDescriptionPage extends Component {
               </div>
             </Row>
           </Row>
+        </Container>
+        <Container className="course-template">
+          <h1>Submit a Review</h1>
+          <form onSubmit={this.handleSubmit}>
+          <div class="form-group" style={{paddingLeft: "20px", paddingRight: "20px"}}>
+            <label for="reviewer_name">Name</label>
+            <input
+              type="text" name="reviewer_name" class="form-control" id="reviewer_name" 
+              value={this.state.reviewer_name} placeholder="Name" onChange={this.handleChange} required>
+            </input>
+          </div>
+          <div class="form-group" style={{padding: "20px"}}>
+            <label for="Review">Review</label>
+            <textarea
+              type="text" name="review" style={{ height: 150 }} class="form-control" id="review" 
+              value={this.state.review} placeholder="Add Your Review For the Course..." onChange={this.handleChange} required>
+            </textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        </Container>
+        <Container className="course-template">
+          <h1>Student Reviews</h1>
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+              <tbody>
+                <tr>
+                  {reviews}
+                </tr>
+              </tbody>
+          </div>
         </Container>
       </div>
 		)
