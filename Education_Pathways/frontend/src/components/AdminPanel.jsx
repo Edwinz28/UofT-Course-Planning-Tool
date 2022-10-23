@@ -10,18 +10,18 @@ class AdminPanel extends Component {
     super(props)
 
     this.state = {
+      courseCodeTitle: "",
       courseCode: "",
       courseName: "",
-      division: "Faculty of Applied Science and Engineering",
-      department: "Department of Edward S. Rogers Sr. Dept. of Electrical & Computer Engineering",
+      division: "",
+      department: "",
       courseDesc: "",
       syllabus: "",
       prerequisites: "",
       corequisites: "",
       exclusions: "",
     }
-    // Differs from state course
-    this.courseCode = this.props.courseCode
+    
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
@@ -44,61 +44,31 @@ class AdminPanel extends Component {
       code: this.props.courseCode
     })
       .then(res => {
-        console.log(res.data.course)
-        this.setState({courseCode: res.data.course.code})
-        this.courseCode = res.data.course.code
-        this.setState({courseName: res.data.course.name})
-        this.setState({courseDesc : res.data.course.description})
-        this.setState({graph: res.data.course.graph})
-        let prereq_len = res.data.course.prereq.length
-        if (prereq_len > 1) {
-          let prereq_str = ""
-          for (let i = 0; i < prereq_len; i++) {
-            prereq_str += res.data.course.prereq[i]
-            if (i !== prereq_len - 1) {
-              prereq_str += ", "
-            }
-          }
-          this.setState({prerequisites : prereq_str})
-        } else {
-          this.setState({prerequisites : res.data.course.prereq})
-        }
-        let coreq_len = res.data.course.coreq.length
-        if (coreq_len > 1) {
-          let coreq_str = ""
-          for (let i = 0; i < coreq_str; i++) {
-            coreq_str += res.data.course.coreq[i]
-            if (i !== coreq_len - 1) {
-              coreq_str += ", "
-            }
-          }
-          this.setState({corequisites : coreq_str})
-        } else {
-          this.setState({corequisites : res.data.course.coreq})
-        }
-        let exclusion_len = res.data.course.exclusion.length
-        if (exclusion_len > 1) {
-          let exclusion_str = ""
-          for (let i = 0; i < exclusion_str; i++) {
-            exclusion_str += res.data.course.exclusion[i]
-            if (i !== exclusion_len - 1) {
-              exclusion_str += ", "
-            }
-          }
-          this.setState({exclusions : exclusion_str})
-        } else {
-          this.setState({exclusions : res.data.course.exclusion})
-        }
-        let syllabus_link = "http://courses.skule.ca/course/" + this.state.courseCode
-        this.setState({syllabus : syllabus_link})
+        this.setState({
+          // courseCodeTitle is used to store an old version of the course code so that the title does not change
+          // when this.state.courseCode changes. IE. The course being edited is ECE444. The user can change this.state.courseCode to "Hello world".
+          // The title will still state "ECE444"
+          courseCodeTitle: res.data.course.code,
+
+          courseCode: res.data.course.code,
+          courseName: res.data.course.name,
+          certificate: res.data.course.certificate,
+          courseDesc : res.data.course.description,
+          graph: res.data.course.graph,
+          prerequisites : res.data.course.prereq,
+          exclusions : res.data.course.exclusion,
+          corequisites : res.data.course.coreq,
+          division: res.data.course.division,
+          department: res.data.course.department,
+          syllabus : "http://courses.skule.ca/course/" + res.data.course.code
+        })
     })
-    console.log("new state: ", this.state)
   }
 
   render() {
     return (
       <div className='admin-page'>
-          <h1>Admin Panel For: {this.courseCode}</h1>
+          <h1>Admin Panel For: {this.state.courseCodeTitle}</h1>
           <h5>Edit and hit save to update the course information.</h5>
           <br/>
           <form onSubmit={this.handleSubmit} className='search'>
@@ -120,7 +90,7 @@ class AdminPanel extends Component {
               <input name='corequisites' placeholder={this.state.corequisites} className='text-input' type='text' value={this.state.corequisites} onChange={this.handleChange}/>
               <label>Exclusions:</label>
               <input name='exclusions' placeholder={this.state.exclusions} className='text-input' type='text' value={this.state.exclusions} onChange={this.handleChange}/>
-              <input type='submit' value='Save' className='submit-button'/>
+              <input type='submit' value='Save. Changes are irreversible!' className='submit-button'/>
           </form>
       </div>
     );

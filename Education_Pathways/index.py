@@ -39,6 +39,11 @@ def search_course_by_code(s):
     if len(course_ids) > 10:
         course_ids = course_ids[:10]
     res = []
+    def parse_courses(courses):
+        # Parses "['mycourse1', 'mycourse2'...]"" from .csv into "mycourse1, mycourse2"
+        char_filter = "'[]"
+        return ''.join(c for c in courses if c not in char_filter)
+
     for i, course_id in enumerate(course_ids):
         d = df.iloc[course_id].to_dict()
         d_certificate = df_certificate.loc[df_certificate['Code'] == d['Code']]
@@ -48,11 +53,12 @@ def search_course_by_code(s):
             'name': d['Name'],
             # 'certificate': d['Certificate'],
             # 'certificate': d_certificate['Certificate'].item(),
-            'description': "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.",
-            'syllabus': "Course syllabus here.",
-            'prereq': ['APS101H1, ECE101H1'],
-            'coreq': ['APS102H1, ECE102H1'],
-            'exclusion': ['APS102H1, ECE102H1'] ,
+            'division': d['Division'],
+            'department': d['Department'],
+            'description': d['Course Description'],
+            'prereq': parse_courses(d['Pre-requisites']),
+            'coreq': parse_courses(d['Corequisite']),
+            'exclusion': parse_courses(d['Exclusion']),
         }
         res.append(res_d)
     return res
