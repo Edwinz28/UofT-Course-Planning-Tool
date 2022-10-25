@@ -8,7 +8,7 @@ from flask import Flask, send_from_directory, jsonify, request
 from flask_restful import Api,Resource, reqparse
 
 df = pd.read_csv("resources/courses.csv")
-df_certificate = pd.read_csv("resources/course_certificate.csv")
+# df_certificate = pd.read_csv("resources/course_certificate.csv")
 df_hss = pd.read_csv("resources/hss_data.csv")
 df_cs = pd.read_csv("resources/cs_data.csv")
 df_cs_exceptions = pd.read_csv("resources/cs_exceptions_data.csv")
@@ -46,13 +46,11 @@ def search_course_by_code(s):
 
     for i, course_id in enumerate(course_ids):
         d = df.iloc[course_id].to_dict()
-        d_certificate = df_certificate.loc[df_certificate['Code'] == d['Code']]
         res_d = {
             '_id': i,
             'code': d['Code'],
             'name': d['Name'],
-            # 'certificate': d['Certificate'],
-            # 'certificate': d_certificate['Certificate'].item(),
+            'certificate': d['Certificate'],
             'division': d['Division'],
             'department': d['Department'],
             'description': d['Course Description'],
@@ -60,6 +58,7 @@ def search_course_by_code(s):
             'coreq': parse_courses(d['Corequisite']),
             'exclusion': parse_courses(d['Exclusion']),
         }
+
         res.append(res_d)
     return res
 
