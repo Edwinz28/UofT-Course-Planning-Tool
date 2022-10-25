@@ -13,7 +13,7 @@ def test_cs(course_code, expected_resp):
     assert expected_resp == resp
 
 @pytest.mark.parametrize("course_code, expected_resp", [("ECE367H1", False), ("TEP442H1", True)])
-def test_cs(course_code, expected_resp):
+def test_hss(course_code, expected_resp):
     
     tester = app.test_client()
     response = tester.get(f"/check/hss?input={course_code}")

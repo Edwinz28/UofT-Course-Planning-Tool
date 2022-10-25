@@ -11,6 +11,7 @@ df = pd.read_csv("resources/courses.csv")
 # df_certificate = pd.read_csv("resources/course_certificate.csv")
 df_hss = pd.read_csv("resources/hss_data.csv")
 df_cs = pd.read_csv("resources/cs_data.csv")
+df_cs_exceptions = pd.read_csv("resources/cs_exceptions_data.csv")
 
 with open('resources/user_reviews.json') as json_file:
     course_reviews_dict = json.load(json_file)
@@ -38,6 +39,11 @@ def search_course_by_code(s):
     if len(course_ids) > 10:
         course_ids = course_ids[:10]
     res = []
+    def parse_courses(courses):
+        # Parses "['mycourse1', 'mycourse2'...]"" from .csv into "mycourse1, mycourse2"
+        char_filter = "'[]"
+        return ''.join(c for c in courses if c not in char_filter)
+
     for i, course_id in enumerate(course_ids):
         d = df.iloc[course_id].to_dict()
         res_d = {
@@ -45,11 +51,12 @@ def search_course_by_code(s):
             'code': d['Code'],
             'name': d['Name'],
             'certificate': d['Certificate'],
-            'description': "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.",
-            'syllabus': "Course syllabus here.",
-            'prereq': ['APS101H1, ECE101H1'],
-            'coreq': ['APS102H1, ECE102H1'],
-            'exclusion': ['APS102H1, ECE102H1'] ,
+            'division': d['Division'],
+            'department': d['Department'],
+            'description': d['Course Description'],
+            'prereq': parse_courses(d['Pre-requisites']),
+            'coreq': parse_courses(d['Corequisite']),
+            'exclusion': parse_courses(d['Exclusion']),
         }
 
         res.append(res_d)
@@ -63,7 +70,7 @@ class UserReviews(Resource):
     def get(self):
         course_code = request.args.get('course_code')
         reviews = course_reviews_dict.get(course_code, None)
-        if reviews:
+        if reviews is not None:
             try:
                 resp = jsonify(reviews)
                 resp.status_code = 200
@@ -73,7 +80,7 @@ class UserReviews(Resource):
                 resp.status_code = 400
                 return resp
         else:
-            resp = jsonify({'error': f"No entry for the queries course code {course_code}"})
+            resp = jsonify({'error': f"No entry for the queried course code {course_code}"})
             resp.status_code = 400
             return resp
     
@@ -88,8 +95,8 @@ class UserReviews(Resource):
         elif review is None:
             resp = jsonify({'error': f"Key 'review' not specified"})
             resp.status_code = 400
-            return resp          
-        elif course_reviews_dict.get(course_code, None):
+            return resp
+        elif course_reviews_dict.get(course_code, None) is not None:
             course_reviews_dict[course_code].append({"name": user_name, 
                                                      "review": review})
             self.__update_json()
@@ -122,9 +129,11 @@ class HssEligibility(Resource):
 class CsEligibility(Resource):
     def __is_course_cs(self, course_code):
         courses = set(df_cs["colummn"])
+        course_exceptions = set(df_cs_exceptions["colummn"])
         for course in courses:
             if course in course_code:
-                return True
+                if course_code not in course_exceptions: return True
+                else: break
         return False
 
     def get(self):
