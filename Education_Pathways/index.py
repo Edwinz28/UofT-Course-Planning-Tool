@@ -115,8 +115,8 @@ class HssEligibility(Resource):
         return course_code in course_set
 
     def get(self):
-        input = request.args.get('input')
-        res = self.__is_course_hss(input)
+        course_code = request.args.get('course_code')
+        res = self.__is_course_hss(course_code)
         try:
             resp = jsonify(res)
             resp.status_code = 200
@@ -137,8 +137,8 @@ class CsEligibility(Resource):
         return False
 
     def get(self):
-        input = request.args.get('input')
-        res = self.__is_course_cs(input)
+        course_code = request.args.get('course_code')
+        res = self.__is_course_cs(course_code)
         try:
             resp = jsonify(res)
             resp.status_code = 200

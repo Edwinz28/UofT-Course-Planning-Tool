@@ -8,7 +8,7 @@ from index import app
 def test_cs(course_code, expected_resp):
     
     tester = app.test_client()
-    response = tester.get(f"/check/cs?input={course_code}")
+    response = tester.get(f"/check/cs?course_code={course_code}")
     resp = strtobool(response.data.decode("utf-8").replace("\n", ""))
     assert expected_resp == resp
 
@@ -16,6 +16,6 @@ def test_cs(course_code, expected_resp):
 def test_hss(course_code, expected_resp):
     
     tester = app.test_client()
-    response = tester.get(f"/check/hss?input={course_code}")
+    response = tester.get(f"/check/hss?course_code={course_code}")
     resp = strtobool(response.data.decode("utf-8").replace("\n", ""))
     assert expected_resp == resp

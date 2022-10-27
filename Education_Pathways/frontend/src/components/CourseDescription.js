@@ -30,6 +30,8 @@ class CourseDescriptionPage extends Component {
       exclusions: "",
       starred: false,
       graphics: [],
+      is_hss: false,
+      is_cs: false,
       reviewer_name: "",
       review: "",
       existing_reviews: [],
@@ -53,6 +55,22 @@ class CourseDescriptionPage extends Component {
   }
   
   componentDidMount() {
+    API.get(`/check/hss?course_code=${this.props.match.params.code}`,{
+      code: this.props.course_code
+    })
+      .then(res => {
+        this.setState({is_hss: res.data})
+        console.log(this.state.is_hss)
+      })
+    
+    API.get(`/check/cs?course_code=${this.props.match.params.code}`,{
+        code: this.props.course_code
+    })
+      .then(res => {
+        this.setState({is_cs: res.data})
+        console.log(this.state.is_hss)
+      })
+
     API.get(`/course/reviews?course_code=${this.props.match.params.code}`, {
       code: this.props.course_code
     })
@@ -95,6 +113,29 @@ class CourseDescriptionPage extends Component {
   }
 
 	render() {
+    let hss;
+    let cs;
+    let certificate;
+
+    if (this.state.is_hss) {
+      hss = <p> This Course is an eligible HSS </p>
+    } else {
+      hss = <p/>
+    }
+
+    if (this.state.is_cs) {
+      cs = <p> This Course is an eligible CS </p>
+
+    } else {
+      cs = <p/>
+    }
+
+    if (this.state.certificate == '[]') {
+      certificate = <p> N/A </p>
+    } else {
+      certificate = <p> {this.state.certificate} </p>
+    }
+
     let reviews;
     if (this.state.existing_reviews.length > 0) {
       reviews = this.state.existing_reviews.map((item, i) => (
@@ -109,12 +150,15 @@ class CourseDescriptionPage extends Component {
     } else {
       reviews = <p> No reviews have been left for this course, be the first! </p>
     }
+
 		return(
       <div className="page-content">
         <Container className="course-template">
           <Row float="center" className="course-title">
             <Col xs={8}>
               <h1>{this.state.course_code} : {this.state.course_name}</h1>
+              {hss}
+              {cs}
             </Col>
             {/* <Col xs={4}>
               <img src={star} onClick={this.check_star} alt="" />
@@ -135,7 +179,7 @@ class CourseDescriptionPage extends Component {
             </Col>
             <Col className="col-item">
               <h3>Certificate</h3>
-              <p>{this.state.certificate}</p>
+              {certificate}
             </Col>
             <Col className="col-item">
               <h3>Past Tests and Syllabi</h3>
