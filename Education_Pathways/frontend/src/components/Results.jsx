@@ -42,7 +42,7 @@ class Result extends Component{
             <Col>
                 <h5>{this.state.course_name}</h5>
             </Col>
-            <Col>{this.state.certificate}</Col>
+            {/* <Col>{this.state.certificate}</Col> */}
             <Col>{this.state.division}</Col>
             <Col>{this.state.faculty}</Col>
             {/* <Col><img src={star} alt=""/></Col> */}
