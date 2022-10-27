@@ -15,6 +15,8 @@ df_cs_exceptions = pd.read_csv("resources/cs_exceptions_data.csv")
 
 with open('resources/user_reviews.json') as json_file:
     course_reviews_dict = json.load(json_file)
+with open('resources/user_ratings.json') as json_file:
+    course_ratings_dict = json.load(json_file)
 
 import config
 app = Flask(__name__, static_folder='frontend/build')
@@ -61,6 +63,41 @@ def search_course_by_code(s):
 
         res.append(res_d)
     return res
+
+class UserRatings(Resource):
+    def __update_json(self):
+        with open("resources/user_ratings.json", "w") as write_file:
+            json.dump(course_ratings_dict, write_file, indent=4)
+
+    def post(self):
+        course_code = request.args.get('course_code')
+        rating = float(request.args.get('rating'))
+        rating_details = course_ratings_dict.get(course_code, None)
+        if rating_details is None:
+            resp = jsonify({'avg_rating': None, 'error': f"No entry for the queried course code {course_code}"})
+            resp.status_code = 400
+            return resp
+        
+        if rating_details.get("average_rating", None) is None:
+            course_ratings_dict[course_code]["average_rating"] = rating
+            course_ratings_dict[course_code]["number_of_ratings"] = 1
+        else:
+            curr_avg_rating = float(course_ratings_dict[course_code]["average_rating"])
+            curr_num_of_ratings = int(course_ratings_dict[course_code]["number_of_ratings"])
+            course_ratings_dict[course_code]["average_rating"] = round((curr_avg_rating*curr_num_of_ratings + rating)/(curr_num_of_ratings+1), 2)
+            course_ratings_dict[course_code]["number_of_ratings"] = curr_num_of_ratings + 1
+
+        self.__update_json()
+
+        try:
+            resp = jsonify({'avg_rating': course_ratings_dict[course_code]["average_rating"],
+                            'msg': "OK"})
+            resp.status_code = 200
+            return resp
+        except Exception as e:
+            resp = jsonify({'data': None, 'error': str(e)})
+            resp.status_code = 400
+            return resp
 
 class UserReviews(Resource):
     def __update_json(self):
@@ -222,6 +259,7 @@ rest_api.add_resource(SearchCourse, '/searchc')
 # rest_api.add_resource(controller.ShowCourse, '/course/details')
 rest_api.add_resource(ShowCourse, '/course/details')
 rest_api.add_resource(UserReviews, '/course/reviews')
+rest_api.add_resource(UserRatings, '/course/ratings')
 rest_api.add_resource(HssEligibility, '/check/hss')
 rest_api.add_resource(CsEligibility, '/check/cs')
 
