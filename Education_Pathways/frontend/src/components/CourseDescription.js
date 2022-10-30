@@ -123,6 +123,20 @@ class CourseDescriptionPage extends Component {
     }
   }
 
+  renderClickableCourses = (courses) => {
+    const r = []
+    let coursesArr = courses.split(/[ ,]+/)
+    for (let i = 0; i < coursesArr.length; i++) {
+      let courseCode = coursesArr[i]
+      r.push(
+        <a href={'/courseDetails/'+ courseCode} style={{textDecoration: 'none', color: '#8198B8'}}>
+          {courseCode}{(i != coursesArr.length - 1) ? ', ': ''}
+        </a>
+      )
+    }
+    return r
+  }
+
 	render() {
     let avg_rating_text;
     let hss;
@@ -235,15 +249,15 @@ class CourseDescriptionPage extends Component {
             <Row>
               <Col className="requisites-display">
                 <h4>Pre-Requisites</h4>
-                <p>{this.state.prerequisites}</p>
+                <p>{this.renderClickableCourses(this.state.prerequisites)}</p>
               </Col>
               <Col className="requisites-display">
                 <h4>Co-Requisites</h4>
-                <p>{this.state.corequisites}</p>
+                <p>{this.renderClickableCourses(this.state.corequisites)}</p>
               </Col>
               <Col className="requisites-display">
                 <h4>Exclusion</h4>
-                <p>{this.state.exclusions}</p>
+                <p>{this.renderClickableCourses(this.state.exclusions)}</p>
               </Col>
             </Row>
             <Row>
