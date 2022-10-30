@@ -110,7 +110,6 @@ class CourseDescriptionPage extends Component {
         this.setState({fav_b: ((localStorage.getItem('favs') || '').includes(this.state.course_code))})
     })
 
-    console.log(this.props) // debug print
   }
 
   openLink = () => {

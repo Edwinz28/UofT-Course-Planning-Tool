@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { BrowserRouter as Router, Link, Switch, Route, useRouteMatch} from "react-router-dom";
-import CourseDescriptionPage from "./CourseDescription";
 import './css/general.css'
 
 function CourseProfile() {
@@ -22,14 +20,6 @@ function CourseProfile() {
     setCleared(true)
   }
 
-  const CustomFavLink = ({ label, to, code }) => {
-    let url = `${to}/${code}`
-
-    return (
-      <Link to={url}>{label}</Link>
-    )
-  }
-
   return (
     <div className="page-content">
       <Container className="course-template" fluid="sm">
@@ -43,24 +33,14 @@ function CourseProfile() {
             <button className={"link"} onClick={() => {clearProfile()}}>Clear</button>
           </Col>
         </Row>
-        <Row>
-          <Router>
+        <Row className="pt-3">
             <div>
               {courseProfileList.map(
-                element => {
-                  return (<li><CustomFavLink label={element} to="/courseDetails" code={element}></CustomFavLink></li>)}
+                code => {
+                  return (<li><a href={`courseDetails/${code}`} style={{textDecoration: "none"}}>{code}</a></li>)
+                }
               )}
             </div>
-
-            <Switch>
-              {/* <Route path="/courseDetails/:code" children={<CourseDescriptionPage></CourseDescriptionPage>}></Route>  */}
-              <Route
-                exact
-                path="/courseDetails/:code"
-                render={props =>(<CourseDescriptionPage {...props} />)}>
-              </Route>
-            </Switch>
-          </Router>
         </Row>
       </Container>
     </div>
