@@ -9,6 +9,7 @@ import requisite_label from './img/requisite-label.png'
 import empty_star from './img/star.png'
 import API from '../api';
 import data from './course_profile_mock.json'
+import FavHeart from './FavHeart';
 
 let star = empty_star;
 
@@ -36,10 +37,12 @@ class CourseDescriptionPage extends Component {
       review: "",
       existing_reviews: [],
       username: localStorage.getItem('username'),
+      fav_b: false,
     }
 
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.addFav = this.addFav.bind(this)
   }
 
   handleChange(event) {
@@ -102,13 +105,45 @@ class CourseDescriptionPage extends Component {
         let temp_graph = []
         //temp_graph.push(<ShowGraph graph_src={this.state.graph}></ShowGraph>)
         this.setState({graphics: temp_graph})
+
+        // Set favourite flag state (true if this course is favourited by the user)
+        this.setState({fav_b: ((localStorage.getItem('favs') || '').includes(this.state.course_code))})
     })
+
+    console.log(this.props) // debug print
   }
 
   openLink = () => {
     const newWindow = window.open(this.state.syllabus, '_blacnk', 'noopener,noreferrer');
     if (newWindow) {
-      newWindow.opener = null;
+      newWindow.opener = null
+    }
+  }
+
+  addFav = () => {
+    let courseCode = this.state.course_code
+    let storage = localStorage.getItem(courseCode)
+    let favs = localStorage.getItem('favs') ? JSON.parse(localStorage.getItem('favs')) : []
+
+    if (storage == null) {
+      // If course code doesn't exist then add it to localStorage. Can also pass other course data in value and set State
+      localStorage.setItem(courseCode, JSON.stringify({'saved': 1}))
+      this.setState({fav_b: true})
+
+      // Update to add course code to favs as a list of keys
+      localStorage.setItem('favs', JSON.stringify([...favs, courseCode]))
+    } else {
+      // If course code exists then remove from localStorage and set state
+      localStorage.removeItem(courseCode)
+      this.setState({fav_b: false})
+
+      // Update to remove course code from favs
+      const index = favs.indexOf(courseCode)
+      if (favs.length == 1) {
+        localStorage.removeItem('favs')
+      } else if (index > -1) {
+        localStorage.setItem('favs', JSON.stringify(favs.splice(index, 1))) // 2nd param in splice means remove one item only
+      }
     }
   }
 
@@ -156,7 +191,7 @@ class CourseDescriptionPage extends Component {
         <Container className="course-template">
           <Row float="center" className="course-title">
             <Col xs={8}>
-              <h1>{this.state.course_code} : {this.state.course_name}</h1>
+              <h1><FavHeart fav_b={this.state.fav_b}/> {this.state.course_code} : {this.state.course_name}</h1>
               {hss}
               {cs}
             </Col>
@@ -165,7 +200,11 @@ class CourseDescriptionPage extends Component {
             </Col> */}
             <Col className="col-item">
               <h3>Course Profile</h3>
-              <button className={"link"} onClick={() => {this.props.save(`${this.state.course_code} : ${this.state.course_name}`)}}>Save</button>
+              { this.state.fav_b ? (
+                <button className={"link"} onClick={() => {this.addFav()}}>Unsave</button>
+              ) : (
+                <button className={"link"} onClick={() => {this.addFav()}}>Save</button>
+              )}
             </Col>
           </Row>
           <Row>

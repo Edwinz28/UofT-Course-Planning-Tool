@@ -45,10 +45,6 @@ export default class NavbarComp extends Component {
     this.setState({username: ""})
   }
 
-  saveToCourseProfile = (course_title) => {
-    // console.log(`save ${course_title} to courseProfile state var~`)
-    this.props.setCourseProfile([...this.props.courseProfile, course_title]);
-  };
 
   render() {
     return (
@@ -98,12 +94,10 @@ export default class NavbarComp extends Component {
               <SearchResultDisplay />
             </Route>
             <Route exact path="/courseDetails/:code"
-              render={props =>(<CourseDescriptionPage {...props} save={this.saveToCourseProfile} />)}>
+              render={props =>(<CourseDescriptionPage {...props} />)}>
             </Route>
-            {/* <Route exact path="/courseDetails/:code" element={ <CourseDescriptionPage save={this.saveToCourseProfile}/> }>
-            </Route> */}
             <Route path="/course_profile">
-              <CourseProfile courseProfile={this.props.courseProfile} />
+              <CourseProfile />
             </Route>
             <Route exact
               path="/Admin/:code"

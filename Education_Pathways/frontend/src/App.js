@@ -5,12 +5,11 @@ import './App.css';
 
 
 function App() {
-  const [ courseProfile, setCourseProfile ] = useState([]);
 
   return (
     <div>
     <div className="App">
-      <NavbarComp courseProfile={courseProfile} setCourseProfile={setCourseProfile} />
+      <NavbarComp  />
     </div>
 
     <div className="App">
