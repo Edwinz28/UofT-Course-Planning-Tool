@@ -224,6 +224,54 @@ class CsEligibility(Resource):
             resp.status_code = 400
             return resp
 
+class UpdateCourseInfo(Resource):
+    def __update_csv(self, id, course_code, course_name, description, prereq, coreq, exclusions, department, division):
+        # maps csv column headers to variable
+        csv = {
+            'Code': course_code.upper(),
+            'Name': course_name,
+            'Division': division,
+            'Course Description': description,
+            'Pre-requisites': prereq.upper(),
+            'Corequisite': coreq.upper(),
+            'Exclusion': exclusions.upper(),
+            'Department': department
+        }
+        for col, value in csv.items():
+            df.loc[id, [col]] = value if value else '[]'
+        df.to_csv("resources/courses.csv", index=False)
+
+    def post(self):
+        id_code = request.args.get('idCode')
+        id = df.index[df['Code'] == id_code].tolist()
+        if len(id) == 0:
+            resp = jsonify({'error': 'Could not find course code in database.'})
+            resp.status_code = 200
+            return resp
+        elif len(id) > 1:
+            resp = jsonify({'error': 'Found multiple entries in database with same code'})
+            resp.status_code = 200
+            return resp
+        course_code = request.args.get('course_code')
+        # If we change the course code we need to not overwrite another course
+        if id_code != course_code and len(df.index[df['Code'] == course_code].tolist()) != 0:
+            resp = jsonify({'error': 'Cannot change course code as it already exists!'})
+            resp.status_code = 200
+            return resp
+
+        course_name = request.args.get('course_name')
+        description = request.args.get('description')
+        prereq = request.args.get('prereq')
+        exclusions = request.args.get('exclusions')
+        department = request.args.get('department')
+        division = request.args.get('division')
+        coreq = request.args.get('coreq')
+        self.__update_csv(id[0], course_code, course_name, description, prereq, coreq, exclusions, department, division)
+
+        resp = jsonify({'msg': 'Successfully Updated Course Information'})
+        resp.status_code = 200
+        return resp
+
 class SearchCourse(Resource):
     def get(self):
         input = request.args.get('input')
@@ -293,12 +341,11 @@ class ShowCourse(Resource):
 
 # API Endpoints
 rest_api = Api(app)
-# rest_api.add_resource(controller.SearchCourse, '/searchc')
 rest_api.add_resource(SearchCourse, '/searchc')
-# rest_api.add_resource(controller.ShowCourse, '/course/details')
 rest_api.add_resource(ShowCourse, '/course/details')
 rest_api.add_resource(UserReviews, '/course/reviews')
 rest_api.add_resource(UserRatings, '/course/ratings')
+rest_api.add_resource(UpdateCourseInfo, '/course/updateInfo')
 rest_api.add_resource(HssEligibility, '/check/hss')
 rest_api.add_resource(CsEligibility, '/check/cs')
 rest_api.add_resource(CheckAdminPW, '/admin/auth')
