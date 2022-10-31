@@ -11,6 +11,7 @@ import CourseDescriptionPage from "./CourseDescription";
 import SearchResultDisplay from './ResultDisplay'
 import CourseProfile from './CourseProfile';
 import AdminPanel from './AdminPanel'
+import PrivateRoute from './PrivateRoute';
 
 function CourseDescription (props) {
   let query = useQuery();
@@ -105,10 +106,10 @@ export default class NavbarComp extends Component {
             <Route path="/course_profile">
               <CourseProfile courseProfile={this.props.courseProfile} />
             </Route>
-            <Route exact
+            <PrivateRoute exact
               path="/Admin/:code"
-              render={props =>(<AdminPanel {...props} />)}>
-            </Route>
+              component={props =>(<AdminPanel {...props} />)}>
+            </PrivateRoute>
             <Route path="/">
               <SearchResultDisplay />
             </Route>

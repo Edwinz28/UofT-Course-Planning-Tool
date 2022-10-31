@@ -163,6 +163,23 @@ class HssEligibility(Resource):
             resp.status_code = 400
             return resp
 
+class CheckAdminPW(Resource):
+    def __is_match(self, pw):
+        # Note this much serves as a proof of concept
+        # Ideally the PW is stored in a database (SQL, MONGO) and is hashed
+        return pw == 'ECE444'
+
+    def post(self):
+        pw = request.args.get('pw')
+        try:
+            resp = jsonify({'isAuth': self.__is_match(pw)})
+            resp.status_code = 200
+            return resp
+        except Exception as e:
+            resp = jsonify({'error': str(e)})
+            resp.status_code = 400
+            return resp
+
 class CsEligibility(Resource):
     def __is_course_cs(self, course_code):
         courses = set(df_cs["colummn"])
@@ -262,6 +279,7 @@ rest_api.add_resource(UserReviews, '/course/reviews')
 rest_api.add_resource(UserRatings, '/course/ratings')
 rest_api.add_resource(HssEligibility, '/check/hss')
 rest_api.add_resource(CsEligibility, '/check/cs')
+rest_api.add_resource(CheckAdminPW, '/admin/auth')
 
 @app.route("/", defaults={'path': ''})
 @app.route('/<path:path>')
