@@ -127,7 +127,7 @@ class UserReviews(Resource):
             json.dump(course_reviews_dict, write_file, indent=4)
 
     def get(self):
-        course_code = request.args.get('course')
+        course_code = request.args.get('course_code')
         reviews = course_reviews_dict.get(course_code, None)
         if reviews is not None:
             try:
@@ -146,7 +146,7 @@ class UserReviews(Resource):
     def post(self):
         user_name = request.args.get('user_name')
         review = request.args.get('review')
-        course_code = request.args.get('course')
+        course_code = request.args.get('course_code')
         if user_name is None:
             resp = jsonify({'error': f"Key 'user_name' not specified"})
             resp.status_code = 400
