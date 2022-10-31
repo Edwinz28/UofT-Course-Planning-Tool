@@ -82,7 +82,11 @@ class UserRatings(Resource):
             return resp
 
         if rating_details.get("average_rating", None) is None:
+<<<<<<< HEAD
+            resp = jsonify({'avg_rating': None, 'msg': "OK"})
+=======
             resp = jsonify(None)
+>>>>>>> f037e7a8137ce5fcd71bd8829021baff0367f0cd
             resp.status_code = 200
             return resp
         else:
