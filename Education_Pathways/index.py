@@ -68,6 +68,28 @@ class UserRatings(Resource):
     def __update_json(self):
         with open("resources/user_ratings.json", "w") as write_file:
             json.dump(course_ratings_dict, write_file, indent=4)
+    
+    def reset_rating(self, course_code):
+        course_ratings_dict[course_code]["average_rating"] = {}
+        self.__update_json()
+        
+    def get(self):
+        course_code = request.args.get('course_code')
+        rating_details = course_ratings_dict.get(course_code, None)
+        if rating_details is None:
+            resp = jsonify({'error': f"No entry for the queried course code {course_code}"})
+            resp.status_code = 400
+            return resp
+
+        if rating_details.get("average_rating", None) is None:
+            resp = jsonify(None)
+            resp.status_code = 200
+            return resp
+        else:
+            curr_avg_rating = float(course_ratings_dict[course_code]["average_rating"])
+            resp = jsonify({'avg_rating': curr_avg_rating, 'msg': "OK"})
+            resp.status_code = 200
+            return resp
 
     def post(self):
         course_code = request.args.get('course_code')
@@ -105,7 +127,7 @@ class UserReviews(Resource):
             json.dump(course_reviews_dict, write_file, indent=4)
 
     def get(self):
-        course_code = request.args.get('course_code')
+        course_code = request.args.get('course')
         reviews = course_reviews_dict.get(course_code, None)
         if reviews is not None:
             try:
@@ -124,7 +146,7 @@ class UserReviews(Resource):
     def post(self):
         user_name = request.args.get('user_name')
         review = request.args.get('review')
-        course_code = request.args.get('course_code')
+        course_code = request.args.get('course')
         if user_name is None:
             resp = jsonify({'error': f"Key 'user_name' not specified"})
             resp.status_code = 400

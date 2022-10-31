@@ -6,11 +6,9 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import requisite_label from './img/requisite-label.png'
-import empty_star from './img/star.png'
 import API from '../api';
+import ReactStars from 'react-stars'
 import data from './course_profile_mock.json'
-
-let star = empty_star;
 
 class CourseDescriptionPage extends Component {
 
@@ -30,6 +28,9 @@ class CourseDescriptionPage extends Component {
       exclusions: "",
       starred: false,
       graphics: [],
+      edit_rating: true,
+      rating: 0,
+      avg_rating: null,
       is_hss: false,
       is_cs: false,
       reviewer_name: "",
@@ -37,9 +38,20 @@ class CourseDescriptionPage extends Component {
       existing_reviews: [],
       username: localStorage.getItem('username'),
     }
-
+    this.ratingChanged = this.ratingChanged.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  ratingChanged(newRating) {
+    if (this.state.edit_rating == true) {
+      this.setState({rating: newRating})
+      this.setState({edit_rating: false})
+
+      API.post(`/course/ratings?course_code=${this.state.course_code}&rating=${newRating}`, {}).then(res => {
+        this.setState({avg_rating: res.data.avg_rating})
+      })
+    }
   }
 
   handleChange(event) {
@@ -48,19 +60,22 @@ class CourseDescriptionPage extends Component {
 
   handleSubmit(event) {
     event.preventDefault()
-    // TODO backend call
-    console.log(this.state.reviewer_name, this.state.review)
-    console.log(API.post(`/course/reviews?course_code=${this.state.course_code}&user_name=${this.state.reviewer_name}&review=${this.state.review}`))
     window.location.reload(false)
   }
   
   componentDidMount() {
+    API.get(`/course/ratings?course_code=${this.props.match.params.code}`, {
+      code: this.props.course_code
+    })
+      .then(res => {
+        this.setState({avg_rating: res.data.avg_rating})
+      })
+   
     API.get(`/check/hss?course_code=${this.props.match.params.code}`,{
       code: this.props.course_code
     })
       .then(res => {
         this.setState({is_hss: res.data})
-        console.log(this.state.is_hss)
       })
     
     API.get(`/check/cs?course_code=${this.props.match.params.code}`,{
@@ -68,17 +83,13 @@ class CourseDescriptionPage extends Component {
     })
       .then(res => {
         this.setState({is_cs: res.data})
-        console.log(this.state.is_hss)
       })
 
     API.get(`/course/reviews?course_code=${this.props.match.params.code}`, {
       code: this.props.course_code
     })
       .then(res => {
-        console.log(res.data)
         this.setState({existing_reviews: res.data})
-        console.log(this.state.existing_reviews)
-        console.log(this.state.existing_reviews.length)
       })
 
     API.get(`/course/details?code=${this.props.match.params.code}`, {
@@ -113,9 +124,17 @@ class CourseDescriptionPage extends Component {
   }
 
 	render() {
+    let avg_rating_text;
     let hss;
     let cs;
     let certificate;
+    let reviews;
+
+    if (this.state.avg_rating == null) {
+      avg_rating_text = <p> No Ratings Yet </p>
+    } else {
+      avg_rating_text = <p> Average Rating: {this.state.avg_rating} </p>
+    }
 
     if (this.state.is_hss) {
       hss = <p> This Course is an eligible HSS </p>
@@ -136,7 +155,6 @@ class CourseDescriptionPage extends Component {
       certificate = <p> {this.state.certificate} </p>
     }
 
-    let reviews;
     if (this.state.existing_reviews.length > 0) {
       reviews = this.state.existing_reviews.map((item, i) => (
                 <Container className="course-template">
@@ -164,6 +182,18 @@ class CourseDescriptionPage extends Component {
               <img src={star} onClick={this.check_star} alt="" />
             </Col> */}
             <Col className="col-item">
+              <h3>Course Rating</h3>
+
+              {avg_rating_text}
+              <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center',}}>
+                <ReactStars
+                  count={5}
+                  onChange={this.ratingChanged}
+                  size={24}
+                  edit={this.state.edit_rating}
+                  value={this.state.rating}
+                  color2={'#ffd700'} />
+              </div>
               <h3>Course Profile</h3>
               <button className={"link"} onClick={() => {this.props.save(`${this.state.course_code} : ${this.state.course_name}`)}}>Save</button>
             </Col>
@@ -255,6 +285,7 @@ class CourseDescriptionPage extends Component {
           </div>
         </Container>
       </div>
+     
 		)
 	}
 }
