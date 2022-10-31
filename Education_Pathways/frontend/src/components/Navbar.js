@@ -9,7 +9,7 @@ import CourseDescriptionPage from "./CourseDescription";
 // import Wishlist from './Wishlist';
 // import SignUp from './SignUp'
 import SearchResultDisplay from './ResultDisplay'
-import CourseProfile from './CourseProfile';
+import FavCourse from './FavCourse';
 import AdminPanel from './AdminPanel'
 
 function CourseDescription (props) {
@@ -63,8 +63,8 @@ export default class NavbarComp extends Component {
                   About Us
                 </Nav.Link>
 
-                <Nav.Link as={Link} to="/course_profile">
-                  Course Profile
+                <Nav.Link as={Link} to="/fav_course">
+                  Favourite List
                 </Nav.Link>
               </Nav>
             </Navbar.Collapse>
@@ -96,8 +96,8 @@ export default class NavbarComp extends Component {
             <Route exact path="/courseDetails/:code"
               render={props =>(<CourseDescriptionPage {...props} />)}>
             </Route>
-            <Route path="/course_profile">
-              <CourseProfile />
+            <Route path="/fav_course">
+              <FavCourse/>
             </Route>
             <Route exact
               path="/Admin/:code"

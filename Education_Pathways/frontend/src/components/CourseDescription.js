@@ -8,7 +8,6 @@ import Row from 'react-bootstrap/Row'
 import requisite_label from './img/requisite-label.png'
 import empty_star from './img/star.png'
 import API from '../api';
-import data from './course_profile_mock.json'
 import FavHeart from './FavHeart';
 
 let star = empty_star;
@@ -189,22 +188,14 @@ class CourseDescriptionPage extends Component {
       <div className="page-content">
         <Container className="course-template">
           <Row float="center" className="course-title">
-            <Col xs={8}>
-              <h1><FavHeart fav_b={this.state.fav_b}/> {this.state.course_code} : {this.state.course_name}</h1>
+            <Col xs={12}>
+              <h1>{this.state.course_code} : {this.state.course_name}<FavHeart fav_b={this.state.fav_b} addFav={this.addFav}/></h1>
               {hss}
               {cs}
             </Col>
             {/* <Col xs={4}>
               <img src={star} onClick={this.check_star} alt="" />
             </Col> */}
-            <Col className="col-item">
-              <h3>Course Profile</h3>
-              { this.state.fav_b ? (
-                <button className={"link"} onClick={() => {this.addFav()}}>Unsave</button>
-              ) : (
-                <button className={"link"} onClick={() => {this.addFav()}}>Save</button>
-              )}
-            </Col>
           </Row>
           <Row>
             <Col className="col-item">
