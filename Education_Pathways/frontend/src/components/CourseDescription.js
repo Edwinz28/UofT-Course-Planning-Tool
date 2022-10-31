@@ -124,17 +124,17 @@ class CourseDescriptionPage extends Component {
   }
 
   renderClickableCourses = (courses) => {
-    const r = []
+    const _render = []
     let coursesArr = courses.split(/[ ,]+/)
     for (let i = 0; i < coursesArr.length; i++) {
       let courseCode = coursesArr[i]
-      r.push(
+      _render.push(
         <a href={'/courseDetails/'+ courseCode} style={{textDecoration: 'none', color: '#8198B8'}}>
           {courseCode}{(i != coursesArr.length - 1) ? ', ': ''}
         </a>
       )
     }
-    return r
+    return _render
   }
 
 	render() {
