@@ -7,3 +7,5 @@ Education_Pathways/frontend/node_modules
 # TODO Remove build from gitignore when merging into main
 Education_Pathways/frontend/build
 #track build 
+Education_Pathways/resources/user_ratings.json
+Education_Pathways/resources/user_reviews.json
