@@ -9,7 +9,7 @@ import CourseDescriptionPage from "./CourseDescription";
 // import Wishlist from './Wishlist';
 // import SignUp from './SignUp'
 import SearchResultDisplay from './ResultDisplay'
-import CourseProfile from './CourseProfile';
+import FavCourse from './FavCourse';
 import AdminPanel from './AdminPanel'
 import PrivateRoute from './PrivateRoute';
 
@@ -46,10 +46,6 @@ export default class NavbarComp extends Component {
     this.setState({username: ""})
   }
 
-  saveToCourseProfile = (course_title) => {
-    // console.log(`save ${course_title} to courseProfile state var~`)
-    this.props.setCourseProfile([...this.props.courseProfile, course_title]);
-  };
 
   render() {
     return (
@@ -68,8 +64,8 @@ export default class NavbarComp extends Component {
                   About Us
                 </Nav.Link>
 
-                <Nav.Link as={Link} to="/course_profile">
-                  Course Profile
+                <Nav.Link as={Link} to="/fav_course">
+                  Favourite List
                 </Nav.Link>
               </Nav>
             </Navbar.Collapse>
@@ -99,12 +95,10 @@ export default class NavbarComp extends Component {
               <SearchResultDisplay />
             </Route>
             <Route exact path="/courseDetails/:code"
-              render={props =>(<CourseDescriptionPage {...props} save={this.saveToCourseProfile} />)}>
+              render={props =>(<CourseDescriptionPage {...props} />)}>
             </Route>
-            {/* <Route exact path="/courseDetails/:code" element={ <CourseDescriptionPage save={this.saveToCourseProfile}/> }>
-            </Route> */}
-            <Route path="/course_profile">
-              <CourseProfile courseProfile={this.props.courseProfile} />
+            <Route path="/fav_course">
+              <FavCourse/>
             </Route>
             <PrivateRoute exact
               path="/Admin/:code"
