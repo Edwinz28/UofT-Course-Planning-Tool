@@ -6,11 +6,9 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import requisite_label from './img/requisite-label.png'
-import empty_star from './img/star.png'
 import API from '../api';
-import data from './course_profile_mock.json'
-
-let star = empty_star;
+import FavHeart from './FavHeart';
+import ReactStars from 'react-stars'
 
 class CourseDescriptionPage extends Component {
 
@@ -30,16 +28,32 @@ class CourseDescriptionPage extends Component {
       exclusions: "",
       starred: false,
       graphics: [],
+      edit_rating: true,
+      rating: 0,
+      avg_rating: null,
       is_hss: false,
       is_cs: false,
       reviewer_name: "",
       review: "",
       existing_reviews: [],
       username: localStorage.getItem('username'),
+      fav_b: false,
     }
-
+    this.ratingChanged = this.ratingChanged.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.addFav = this.addFav.bind(this)
+  }
+
+  ratingChanged(newRating) {
+    if (this.state.edit_rating == true) {
+      this.setState({rating: newRating})
+      this.setState({edit_rating: false})
+
+      API.post(`/course/ratings?course_code=${this.state.course_code}&rating=${newRating}`, {}).then(res => {
+        this.setState({avg_rating: res.data.avg_rating})
+      })
+    }
   }
 
   handleChange(event) {
@@ -48,19 +62,22 @@ class CourseDescriptionPage extends Component {
 
   handleSubmit(event) {
     event.preventDefault()
-    // TODO backend call
-    console.log(this.state.reviewer_name, this.state.review)
-    console.log(API.post(`/course/reviews?course_code=${this.state.course_code}&user_name=${this.state.reviewer_name}&review=${this.state.review}`))
     window.location.reload(false)
   }
   
   componentDidMount() {
+    API.get(`/course/ratings?course_code=${this.props.match.params.code}`, {
+      code: this.props.course_code
+    })
+      .then(res => {
+        this.setState({avg_rating: res.data.avg_rating})
+      })
+   
     API.get(`/check/hss?course_code=${this.props.match.params.code}`,{
       code: this.props.course_code
     })
       .then(res => {
         this.setState({is_hss: res.data})
-        console.log(this.state.is_hss)
       })
     
     API.get(`/check/cs?course_code=${this.props.match.params.code}`,{
@@ -68,17 +85,13 @@ class CourseDescriptionPage extends Component {
     })
       .then(res => {
         this.setState({is_cs: res.data})
-        console.log(this.state.is_hss)
       })
 
     API.get(`/course/reviews?course_code=${this.props.match.params.code}`, {
       code: this.props.course_code
     })
       .then(res => {
-        console.log(res.data)
         this.setState({existing_reviews: res.data})
-        console.log(this.state.existing_reviews)
-        console.log(this.state.existing_reviews.length)
       })
 
     API.get(`/course/details?code=${this.props.match.params.code}`, {
@@ -103,21 +116,74 @@ class CourseDescriptionPage extends Component {
         let temp_graph = []
         //temp_graph.push(<ShowGraph graph_src={this.state.graph}></ShowGraph>)
         this.setState({graphics: temp_graph})
+
+        // Set favourite flag state (true if this course is favourited by the user)
+        this.setState({fav_b: ((localStorage.getItem('favs') || '').includes(this.state.course_code))})
     })
+
   }
 
   openLink = () => {
     const newWindow = window.open(this.state.syllabus, '_blacnk', 'noopener,noreferrer');
     if (newWindow) {
-      newWindow.opener = null;
+      newWindow.opener = null
     }
   }
 
+  addFav = () => {
+    let courseCode = this.state.course_code
+    let storage = localStorage.getItem(courseCode)
+    let favs = localStorage.getItem('favs') ? JSON.parse(localStorage.getItem('favs')) : []
+
+    if (storage == null) {
+      // If course code doesn't exist then add it to localStorage. Can also pass other course data in value and set State
+      localStorage.setItem(courseCode, JSON.stringify({'saved': 1}))
+      this.setState({fav_b: true})
+
+      // Update to add course code to favs as a list of keys
+      localStorage.setItem('favs', JSON.stringify([...favs, courseCode]))
+    } else {
+      // If course code exists then remove from localStorage and set state
+      localStorage.removeItem(courseCode)
+      this.setState({fav_b: false})
+
+      // Update to remove course code from favs
+      const index = favs.indexOf(courseCode)
+      if (favs.length == 1) {
+        localStorage.removeItem('favs')
+      } else if (index > -1) {
+        localStorage.setItem('favs', JSON.stringify(favs.splice(index, 1))) // 2nd param in splice means remove one item only
+      }
+    }
+  }
+
+  renderClickableCourses = (courses) => {
+    const _render = []
+    let coursesArr = courses.split(/[ ,]+/)
+    for (let i = 0; i < coursesArr.length; i++) {
+      let courseCode = coursesArr[i]
+      _render.push(
+        <a href={'/courseDetails/'+ courseCode} style={{textDecoration: 'none', color: '#8198B8'}}>
+          {courseCode}{(i != coursesArr.length - 1) ? ', ': ''}
+        </a>
+      )
+    }
+    return _render
+  }
+
 	render() {
+    let avg_rating_text;
     let hss;
     let cs;
     let minor;
     let certificate;
+    let reviews;
+
+    if (this.state.avg_rating == null) {
+      avg_rating_text = <p> No Ratings Yet </p>
+    } else {
+      avg_rating_text = <p> Average Rating: {this.state.avg_rating} </p>
+    }
 
     if (this.state.is_hss) {
       hss = <p> This Course is an eligible HSS </p>
@@ -144,7 +210,6 @@ class CourseDescriptionPage extends Component {
       certificate = <p> {this.state.certificate} </p>
     }
 
-    let reviews;
     if (this.state.existing_reviews.length > 0) {
       reviews = this.state.existing_reviews.map((item, i) => (
                 <Container className="course-template">
@@ -163,8 +228,8 @@ class CourseDescriptionPage extends Component {
       <div className="page-content">
         <Container className="course-template">
           <Row float="center" className="course-title">
-            <Col xs={8}>
-              <h1>{this.state.course_code} : {this.state.course_name}</h1>
+            <Col xs={12}>
+              <h1>{this.state.course_code} : {this.state.course_name}<FavHeart fav_b={this.state.fav_b} addFav={this.addFav}/></h1>
               {hss}
               {cs}
             </Col>
@@ -172,8 +237,18 @@ class CourseDescriptionPage extends Component {
               <img src={star} onClick={this.check_star} alt="" />
             </Col> */}
             <Col className="col-item">
-              <h3>Course Profile</h3>
-              <button className={"link"} onClick={() => {this.props.save(`${this.state.course_code} : ${this.state.course_name}`)}}>Save</button>
+              <h3>Course Rating</h3>
+
+              {avg_rating_text}
+              <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center',}}>
+                <ReactStars
+                  count={5}
+                  onChange={this.ratingChanged}
+                  size={24}
+                  edit={this.state.edit_rating}
+                  value={this.state.rating}
+                  color2={'#ffd700'} />
+              </div>
             </Col>
           </Row>
           <Row>
@@ -217,15 +292,15 @@ class CourseDescriptionPage extends Component {
             <Row>
               <Col className="requisites-display">
                 <h4>Pre-Requisites</h4>
-                <p>{this.state.prerequisites}</p>
+                <p>{this.renderClickableCourses(this.state.prerequisites)}</p>
               </Col>
               <Col className="requisites-display">
                 <h4>Co-Requisites</h4>
-                <p>{this.state.corequisites}</p>
+                <p>{this.renderClickableCourses(this.state.corequisites)}</p>
               </Col>
               <Col className="requisites-display">
                 <h4>Exclusion</h4>
-                <p>{this.state.exclusions}</p>
+                <p>{this.renderClickableCourses(this.state.exclusions)}</p>
               </Col>
             </Row>
             <Row>
@@ -267,6 +342,7 @@ class CourseDescriptionPage extends Component {
           </div>
         </Container>
       </div>
+     
 		)
 	}
 }

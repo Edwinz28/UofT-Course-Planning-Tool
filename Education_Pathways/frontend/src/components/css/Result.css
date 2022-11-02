@@ -32,6 +32,15 @@
   width: 7em;
 }
 
+.back-button {
+  background-color: #1c3e6e;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  border: none;
+  height: 3em;
+}
+
 .text-input {
   width: 40%;
   height: 3em;
@@ -43,7 +52,7 @@
 
 .textarea-input {
   width: 40%;
-  height: 6em;
+  height: 12em;
   border-radius: 15px;
   border: 2px solid #c4c4c4;
   margin-right: 1%;

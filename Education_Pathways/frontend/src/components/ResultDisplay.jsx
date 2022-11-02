@@ -33,7 +33,6 @@ class SearchResultDisplay extends Component{
       .then(res => {
         if (res.status === 200) {
           this.setState({results: []})
-          console.log(res.data.length)
           if (res.data.length > 0) {
             let len = res.data.length
             let result_temp = []
