@@ -52,6 +52,7 @@ def search_course_by_code(s):
             '_id': i,
             'code': d['Code'],
             'name': d['Name'],
+            'minor': d['Minor'],
             'certificate': d['Certificate'],
             'division': d['Division'],
             'department': d['Department'],

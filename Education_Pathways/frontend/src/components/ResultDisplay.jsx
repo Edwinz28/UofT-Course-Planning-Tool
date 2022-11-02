@@ -38,7 +38,7 @@ class SearchResultDisplay extends Component{
             let result_temp = []
             result_temp.push(<Label></Label>)
             for (let i = 0; i < len; i++) {
-                result_temp.push(<Result key={res.data[i]._id} course_code={res.data[i].code} course_name={res.data[i].name} certificate={res.data[i].certificate}></Result>)
+                result_temp.push(<Result key={res.data[i]._id} course_code={res.data[i].code} course_name={res.data[i].name} minor={res.data[i].minor} certificate={res.data[i].certificate}></Result>)
             }
             this.setState({results: result_temp})
           } 
@@ -49,7 +49,7 @@ class SearchResultDisplay extends Component{
             else {
               let result_temp = []
               result_temp.push(<Label></Label>)
-              result_temp.push(<Result key={res.data.course._id} course_code={res.data.course.code} course_name={res.data.course.name} certificate={res.data.course.certificate}></Result>)
+              result_temp.push(<Result key={res.data.course._id} course_code={res.data.course.code} course_name={res.data.course.name} minor={res.data.course.minor} certificate={res.data.course.certificate}></Result>)
               this.setState({results: result_temp})
             }
         } else if (res.status === 400) {

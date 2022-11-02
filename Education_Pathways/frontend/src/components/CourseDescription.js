@@ -101,6 +101,7 @@ class CourseDescriptionPage extends Component {
         this.setState({
           course_code: res.data.course.code,
           course_name: res.data.course.name,
+          minor: res.data.course.minor,
           certificate: res.data.course.certificate,
           course_description : res.data.course.description,
           graph: res.data.course.graph,
@@ -174,6 +175,7 @@ class CourseDescriptionPage extends Component {
     let avg_rating_text;
     let hss;
     let cs;
+    let minor;
     let certificate;
     let reviews;
 
@@ -194,6 +196,12 @@ class CourseDescriptionPage extends Component {
 
     } else {
       cs = <p/>
+    }
+
+    if (this.state.minor == '[]') {
+      minor = <p> N/A </p>
+    } else {
+      minor = <p> {this.state.minor} </p>
     }
 
     if (this.state.certificate == '[]') {
@@ -251,6 +259,10 @@ class CourseDescriptionPage extends Component {
             <Col className="col-item">
               <h3>Department</h3>
               <p>{this.state.department}</p>
+            </Col>
+            <Col className="col-item">
+              <h3>Minor</h3>
+              {minor}
             </Col>
             <Col className="col-item">
               <h3>Certificate</h3>

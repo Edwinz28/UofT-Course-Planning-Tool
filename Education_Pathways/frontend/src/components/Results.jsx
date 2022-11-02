@@ -17,6 +17,7 @@ class Result extends Component{
     this.state = {
       course_code : this.props.course_code,
       course_name: this.props.course_name,
+      minor: this.props.minor,
       certificate: this.props.certificate,
       division: "Division of Computer Engineering",
       faculty: "Faculty of Applied Science and Engineering",
