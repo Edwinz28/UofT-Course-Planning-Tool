@@ -46,7 +46,7 @@ class CourseDescriptionPage extends Component {
   }
 
   ratingChanged(newRating) {
-    if (this.state.edit_rating == true) {
+    if (this.state.edit_rating === true) {
       this.setState({rating: newRating})
       this.setState({edit_rating: false})
 
@@ -149,7 +149,7 @@ class CourseDescriptionPage extends Component {
 
       // Update to remove course code from favs
       const index = favs.indexOf(courseCode)
-      if (favs.length == 1) {
+      if (favs.length === 1) {
         localStorage.removeItem('favs')
       } else if (index > -1) {
         localStorage.setItem('favs', JSON.stringify(favs.splice(index, 1))) // 2nd param in splice means remove one item only
@@ -164,7 +164,7 @@ class CourseDescriptionPage extends Component {
       let courseCode = coursesArr[i]
       _render.push(
         <a href={'/courseDetails/'+ courseCode} style={{textDecoration: 'none', color: '#8198B8'}}>
-          {courseCode}{(i != coursesArr.length - 1) ? ', ': ''}
+          {courseCode}{(i !== coursesArr.length - 1) ? ', ': ''}
         </a>
       )
     }
@@ -198,13 +198,13 @@ class CourseDescriptionPage extends Component {
       cs = <p/>
     }
 
-    if (this.state.minor == '[]') {
+    if (this.state.minor === '[]') {
       minor = <p> N/A </p>
     } else {
       minor = <p> {this.state.minor} </p>
     }
 
-    if (this.state.certificate == '[]') {
+    if (this.state.certificate === '[]') {
       certificate = <p> N/A </p>
     } else {
       certificate = <p> {this.state.certificate} </p>
