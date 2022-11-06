@@ -56,7 +56,7 @@ export default class NavbarComp extends Component {
             <Navbar.Brand>
               <img src={logo} alt="" />{" "}
               <Nav.Link as={Link} to="/" style={{ color: "white", display: "inline" }}>
-                Education Pathways
+                Education Pathways Plus
               </Nav.Link>
             </Navbar.Brand>
             <Navbar.Collapse>
