@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './css/course-description.css'
+import './css/general.css'
 import 'bootstrap/dist/css/bootstrap.css';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
