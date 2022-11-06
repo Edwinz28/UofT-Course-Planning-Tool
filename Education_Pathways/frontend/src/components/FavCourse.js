@@ -24,9 +24,9 @@ function FavCourse () {
   }
 
   return (
-    <div className="page-content">
+    <div className="page-content pt-50">
       <Container className="course-template" fluid="sm">
-        <Row className='pt-3'>
+        <Row>
           <h1>Favourite List</h1>
           <p>All your favourited courses will be saved here for you easy access! You may also clear your current list to start a new one by clicking on the "Clear" button below.</p>
         </Row>
