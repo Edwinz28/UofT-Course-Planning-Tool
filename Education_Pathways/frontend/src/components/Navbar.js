@@ -4,12 +4,10 @@ import 'bootstrap/dist/css/bootstrap.css';
 import logo from './img/logo.png'
 import { Navbar, Nav } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch, Link, useLocation } from "react-router-dom";
-// import LogIn from "./LogIn.jsx";
 import CourseDescriptionPage from "./CourseDescription";
-// import Wishlist from './Wishlist';
-// import SignUp from './SignUp'
 import SearchResultDisplay from './ResultDisplay'
 import FavCourse from './FavCourse';
+import CourseGraph from './CourseGraph';
 import AdminPanel from './AdminPanel'
 import PrivateRoute from './PrivateRoute';
 import About from './About'
@@ -68,6 +66,10 @@ export default class NavbarComp extends Component {
                 <Nav.Link as={Link} to="/fav_course">
                   Favourite List
                 </Nav.Link>
+
+                <Nav.Link as={Link} to="/course_graph">
+                  Course Graph
+                </Nav.Link>
               </Nav>
             </Navbar.Collapse>
           </Navbar>
@@ -85,6 +87,9 @@ export default class NavbarComp extends Component {
             </Route>
             <Route path="/fav_course">
               <FavCourse/>
+            </Route>
+            <Route path="/course_graph">
+              <CourseGraph/>
             </Route>
             <PrivateRoute exact
               path="/Admin/:code"
