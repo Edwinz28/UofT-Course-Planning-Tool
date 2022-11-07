@@ -9,6 +9,8 @@ import requisite_label from './img/requisite-label.png'
 import API from '../api';
 import FavHeart from './FavHeart';
 import ReactStars from 'react-stars'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 class CourseDescriptionPage extends Component {
 
@@ -53,6 +55,16 @@ class CourseDescriptionPage extends Component {
       API.post(`/course/ratings?course_code=${this.state.course_code}&rating=${newRating}`, {}).then(res => {
         this.setState({avg_rating: res.data.avg_rating})
       })
+      toast.success("Added " + newRating + " star rating to " + this.state.course_code, {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
     }
   }
 
@@ -142,6 +154,17 @@ class CourseDescriptionPage extends Component {
 
       // Update to add course code to favs as a list of keys
       localStorage.setItem('favs', JSON.stringify([...favs, courseCode]))
+      console.log(courseCode)
+      toast.success(courseCode + " Added to Favorites!", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
     } else {
       // If course code exists then remove from localStorage and set state
       localStorage.removeItem(courseCode)
@@ -154,6 +177,16 @@ class CourseDescriptionPage extends Component {
       } else if (index > -1) {
         localStorage.setItem('favs', JSON.stringify(favs.splice(index, 1))) // 2nd param in splice means remove one item only
       }
+      toast.success(courseCode + " Removed from Favorites!", {
+            position: "top-center",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
     }
   }
 
@@ -229,16 +262,10 @@ class CourseDescriptionPage extends Component {
         <Container className="course-template">
           <Row float="center" className="course-title">
             <Col xs={12}>
-              <h1>{this.state.course_code} : {this.state.course_name}<FavHeart fav_b={this.state.fav_b} addFav={this.addFav}/></h1>
+              <h1>{this.state.course_code} : {this.state.course_name} &nbsp;&nbsp;<FavHeart fav_b={this.state.fav_b} addFav={this.addFav}/></h1>
               {hss}
               {cs}
             </Col>
-            {/* <Col xs={4}>
-              <img src={star} onClick={this.check_star} alt="" />
-            </Col> */}
-            <Col className="col-item">
-              <h3>Course Rating</h3>
-
               {avg_rating_text}
               <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center',}}>
                 <ReactStars
@@ -249,46 +276,54 @@ class CourseDescriptionPage extends Component {
                   value={this.state.rating}
                   color2={'#ffd700'} />
               </div>
+          </Row>
+          <Row>
+            <Col className="col-item">
+              <div style={{display: 'flex', flexDirection: "column", textAlign: 'left'}}>
+                <div>
+                  <h3> Division: </h3>
+                  <p>{this.state.division}</p>
+                </div>
+                <div>
+                  <h3> Division: </h3>
+                  <p>{this.state.department}</p>
+                </div>
+              </div>
+            </Col>
+            <Col className="col-item">
+              <div style={{display: 'flex', flexDirection: "column", textAlign: 'left'}}>
+                <div>
+                  <h3>Minor:</h3>
+                  {minor}
+                </div>
+                <div>
+                  <h3>Certificates:</h3>  
+                  {certificate}
+                </div>
+              </div>
+            </Col>
+            <Col className="col-item">
+              <button className="course_description_button" onClick={this.openLink}>
+                Past Tests and Syllabi
+              </button>
+              <a href={"/Admin/" + this.state.course_code}>
+                <button className="course_description_button">
+                  Edit Information (Admin)
+                </button>
+              </a>
             </Col>
           </Row>
           <Row>
             <Col className="col-item">
-              <h3>Division</h3>
-              <p>{this.state.division}</p>
-            </Col>
-            <Col className="col-item">
-              <h3>Department</h3>
-              <p>{this.state.department}</p>
-            </Col>
-            <Col className="col-item">
-              <h3>Minor</h3>
-              {minor}
-            </Col>
-            <Col className="col-item">
-              <h3>Certificate</h3>
-              {certificate}
-            </Col>
-            <Col className="col-item">
-              <h3>Past Tests and Syllabi</h3>
-              <button className={"link"} onClick={this.openLink}>View</button>
-            </Col>
-            <Col className="col-item">
-              <h3>Edit Information</h3>
-              <a href={"/Admin/" + this.state.course_code}>
-                <button className={"link"}>Edit</button>
-              </a>
+              <div style={{display: 'flex', flexDirection: "column", textAlign: 'left'}}>
+                <h3>Course Description</h3>
+                <p>{this.state.course_description}</p>
+              </div>
             </Col>
           </Row>
-          <Row className="col-item course-description">
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-              <h3>Course Description</h3>
-              <p>{this.state.course_description}</p>
-            </div>
-          </Row>
-          <Row className="col-item course-requisite">
-            <Row>
-              <h3>Course Requisites</h3>
-            </Row>
+          <Row>
+            <Col className="col-item">
+              <h3 style={{marginRight: "3%"}}>Course Requisites</h3>
             <Row>
               <Col className="requisites-display">
                 <h4>Pre-Requisites</h4>
@@ -304,11 +339,11 @@ class CourseDescriptionPage extends Component {
               </Col>
             </Row>
             <Row>
-              <div className={"req-graph"}>
-                <img style={{width: "70%", marginBottom: "3%"}} alt="" src={requisite_label}></img>
-                <img src={`data:image/jpeg;base64,${this.state.graph}`} alt="" ></img>
+              <div className="req-graph">
+                <img style={{width: "70%", marginBottom: "3%", marginRight: "9%"}} alt="" src={requisite_label}></img>
               </div>
             </Row>
+            </Col>
           </Row>
         </Container>
         <Container className="course-template">
@@ -341,8 +376,19 @@ class CourseDescriptionPage extends Component {
               </tbody>
           </div>
         </Container>
+        <ToastContainer
+            position="top-center"
+            autoClose={500}
+            limit={5}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"/>
       </div>
-     
 		)
 	}
 }

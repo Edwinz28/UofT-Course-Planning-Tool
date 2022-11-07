@@ -31,7 +31,6 @@ p {
   margin-left: 10px;
   margin-top: 10px;
   margin-bottom: 2%;
-  padding-bottom: 2%;
 }
 
 .course-template .syllabus {
@@ -58,15 +57,19 @@ p {
   color: #5C779C;
 }
 
-.course-template .course-description, .course-requisite {
+.course-template .course-description{
   margin-left: 0;
 }
 
 .requisites-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   height: 120px;
   margin-top: 2%;
   background-color: #EFF3FB;
   margin-left: 3%;
+  margin-right: 3%;
   border-radius: 15px;
   padding-top: 5px;
   padding-bottom: 5px;
@@ -79,20 +82,34 @@ p {
 
 .link {
   margin-top: 2%;
-    border-radius: 15px;
-    background-color: #1C3E6E;
-    color: white;
-    width: 8em;
-    height: 3em;
-    border: none;
-    font-size: 1.2em;
-    text-align: center;
+  border-radius: 15px;
+  background-color: #1C3E6E;
+  color: white;
+  width: 8em;
+  height: 3em;
+  border: none;
+  font-size: 1.2em;
+  text-align: center;
+}
+
+.course_description_button {
+  margin-top: 5%;
+  margin-bottom: 5%;
+  border-radius: 15px;
+  background-color: #98afe4;
+  color: black;
+  width: 13em;
+  height: 5em;
+  border: none;
+  font-size: 1.2em;
+  text-align: center;
 }
 
 .req-graph {
   border: none;
   width: 60%;
   margin-left: 5%;
+  margin-right: 5%;
   justify-content: center;
   margin-bottom: 2%;
 }
