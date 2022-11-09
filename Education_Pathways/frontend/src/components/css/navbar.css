@@ -11,7 +11,7 @@
 }
 
 .nav-item a:hover {
-  color: #c4d1e4;
+  color: #9ca6b6;
 }
 
 .navbar-brand img {
@@ -20,6 +20,7 @@
 }
 /* make the text go down */
 .body_text {
+  background-color: #ffffff71;
   font-family: 'Times New Roman', Times, serif;
   position: relative;
   font-size: 150%;
