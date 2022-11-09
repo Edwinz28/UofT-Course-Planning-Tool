@@ -2,7 +2,7 @@ services:
   flask:
     build: .
     ports:
-      - "5000:5000"
+      - "5050:5050"
   react:
     build: ./Education_Pathways/frontend
     ports:

@@ -1,5 +1,5 @@
 import React from 'react';
-import footer from './img/footer.png';
+import footer from './img/carte_logo_trans.png';
   
 const Footer = () => (
   
