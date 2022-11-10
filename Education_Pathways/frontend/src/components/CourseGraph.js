@@ -53,15 +53,18 @@ function ForceGraph({
   const color = nodeGroup == null ? null : d3.scaleOrdinal(nodeGroups, colors);
 
   // Construct the forces.
-  const forceNode = d3.forceManyBody();
-  const forceLink = d3.forceLink(links).id(({index: i}) => N[i]);
-  if (nodeStrength !== undefined) forceNode.strength(nodeStrength);
-  if (linkStrength !== undefined) forceLink.strength(linkStrength);
+  const forceNode = d3.forceManyBody(); // + = attraction - = repulsion
+  const forceLink = d3.forceLink(links).id(({index: i}) => N[i]); // .id() function let you use different field in node dict for linking
+  if (nodeStrength !== undefined) forceNode.strength(nodeStrength); // Define the repelling force
+  if (linkStrength !== undefined) forceLink.strength(linkStrength); // Define the centre force
 
   const simulation = d3.forceSimulation(nodes)
+      // .force("x", d3.forceX().strength(0.1))
+      // .force("y", d3.forceY().strength(0.1))
       .force("link", forceLink)
       .force("charge", forceNode)
-      .force("center",  d3.forceCenter())
+      .force("center",  d3.forceCenter().strength(1))
+      .force("collide", d3.forceCollide(nodeRadius))
       .on("tick", ticked);
 
   const svg = d3.create("svg")
@@ -75,20 +78,43 @@ function ForceGraph({
       .attr("stroke-opacity", linkStrokeOpacity)
       .attr("stroke-width", typeof linkStrokeWidth !== "function" ? linkStrokeWidth : null)
       .attr("stroke-linecap", linkStrokeLinecap)
-    .selectAll("line")
-    .data(links)
-    .join("line");
+      .selectAll("line")
+      .data(links)
+      .join("line");
 
   const node = svg.append("g")
       .attr("fill", nodeFill)
       .attr("stroke", nodeStroke)
       .attr("stroke-opacity", nodeStrokeOpacity)
       .attr("stroke-width", nodeStrokeWidth)
-    .selectAll("circle")
-    .data(nodes)
-    .join("circle")
+      .selectAll("circle")
+      .data(nodes)
+      .join("circle")
       .attr("r", nodeRadius)
-      .call(drag(simulation));
+      .call(drag(simulation))
+      .on("mouseenter", (evt, d) => { // callback function to highlight links and nodes on mouse over
+        node
+          .filter(n => n.id === d.id)
+          .attr("fill", "#f02b2b")
+          .attr("r", nodeRadius*2);
+
+        link
+          .filter(l => l.source.id === d.id || l.target.id === d.id)
+          .attr("stroke", "#f02b2b")
+          .attr("stroke-opacity", 1.0)
+          .attr("stroke-width", 3);
+      })
+      .on("mouseleave", evt => { // callback function to reset links and nodes on mouse remove
+        node
+          .attr("r", nodeRadius);
+
+        if (G) node.attr("fill", ({index: i}) => color(G[i]));
+
+        link.attr("display", "block")
+          .attr("stroke", typeof linkStroke !== "function" ? linkStroke : null)
+          .attr("stroke-opacity", linkStrokeOpacity)
+          .attr("stroke-width", typeof linkStrokeWidth !== "function" ? linkStrokeWidth : null);
+      });
 
   if (W) link.attr("stroke-width", ({index: i}) => W[i]);
   if (L) link.attr("stroke", ({index: i}) => L[i]);
@@ -114,7 +140,7 @@ function ForceGraph({
 
   function drag(simulation) {    
     function dragstarted(event) {
-      if (!event.active) simulation.alphaTarget(0.3).restart();
+      if (!event.active) simulation.alphaTarget(1).restart();
       event.subject.fx = event.subject.x;
       event.subject.fy = event.subject.y;
     }
@@ -147,8 +173,11 @@ function CourseGraph () {
     nodeGroup: d => d.group,
     nodeTitle: d => `${d.id}\n${d.group}`,
     linkStrokeWidth: l => Math.sqrt(l.value),
-    width: 960,
-    height: 600,
+    nodeTitle: d => `Course: ${d.id} - ${d.course_name}\nDepartment: ${d.department}`,
+    nodeStrength: -4,
+    linkStrength: 0.1,
+    width: 1400,
+    height: 1200,
   })
 
   const svg = useRef(null)
@@ -166,7 +195,9 @@ function CourseGraph () {
           <p>Relationships between courses in Faculty of Applied Science & Engineering.</p>
         </Row>
         <Row>
-          <div ref={svg}></div>
+          <Col>
+            <div ref={svg}></div>
+          </Col>
         </Row>
       </Container>
     </div>
