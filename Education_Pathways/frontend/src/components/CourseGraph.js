@@ -209,6 +209,7 @@ function CourseGraph() {
         <Row className='pt-3'>
           <h1>Course Graph</h1>
           <p>Relationships between courses in Faculty of Applied Science & Engineering.</p>
+          <p>This is an interactive graph! Try  dragging, clicking and scrolling!</p>
         </Row>
         <Row>
           <Col>
