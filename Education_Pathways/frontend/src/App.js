@@ -5,11 +5,8 @@ import './App.css';
 
 
 function App() {
-
   return (
-    <div className='bg'
-      style={{ backgroundImage: `url("/ut-bg-min.jpg")`
-    }}>
+    <div className='bg' style= {{backgroundColor: '#F2F4F8'}}>
       <div className="App">
         <NavbarComp  />
       </div>
