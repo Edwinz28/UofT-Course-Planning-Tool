@@ -1,8 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, {useRef, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import * as d3 from "d3"
 import { data, course_graph_data } from "./graph_data.js"
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch"
+
+
+import { Label } from 'semantic-ui-react'
+import './css/course-graph.css'
 
 // Copyright 2021 Observable, Inc.
 // Released under the ISC license.
@@ -208,11 +212,48 @@ function CourseGraph() {
       <Container className="course-template" fluid="sm">
         <Row className='pt-3'>
           <h1>Course Graph</h1>
-          <p>Relationships between courses in Faculty of Applied Science & Engineering.</p>
+          <p>Relationships between courses in Faculty of Applied Science & Engineering at University of Toronto. 
+            Each node represents a course in Faculty of Applied Science & Engineering; 
+            each link is formed between two courses if one course is a prerequisite or recommended preparation of another course.</p>
           <p>This is an interactive graph! Try  dragging, clicking and scrolling!</p>
         </Row>
         <Row>
-          <Col>
+          <Row className="legend">
+            <p style={{color: "black", fontSize: "medium"}}><b>Legend</b></p>
+            <Col className="legend-icons">
+              <Label className="graph-label" color='red' key='red'>
+                <p className="graph-label-text">Cross Disipline Area Programs Office</p>
+              </Label> 
+              <Label className="graph-label" color='green' key='green'>
+                <p className="graph-label-text">Electrical and Computer Engineering</p>
+              </Label> 
+              <Label className="graph-label" color='teal' key='teal'>
+                <p className="graph-label-text">Engineering Science</p>
+              </Label> 
+              <Label className="graph-label" color='blue' key='blue'>
+              <p className="graph-label-text">Industrial and Mechanical Engineering</p>
+              </Label> 
+              <Label className="graph-label"  color='yellow' key='yellow'>
+                <p className="graph-label-text">Engineering First Year Office</p>
+              </Label> 
+              <Label className="graph-label"  color='orange' key='orange'>
+                <p className="graph-label-text">Civil and Mineral Engineering</p>
+              </Label> 
+              <Label className="graph-label"  color='purple' key='purple'>
+                <p className="graph-label-text">Faculty of Applied Science & Engineering</p>
+              </Label> 
+              <Label className="graph-label"  color='brown' key='brown'>
+                <p className="graph-label-text">Biomedical Engineering</p>
+              </Label> 
+              <Label className="graph-label"  color='pink' key='pink'>
+                <p className="graph-label-text">Transdisipline Engineering Education and Practice</p>
+              </Label> 
+              <Label className="graph-label"  color='grey' key='grey'>
+                <p className="graph-label-text">Material Sciences and Engineering</p>
+              </Label>
+            </Col>
+          </Row>
+          <Col style={{border: '5px dotted gray'}}>
             <TransformWrapper>
               <TransformComponent>
                 <div ref={svg}></div>
