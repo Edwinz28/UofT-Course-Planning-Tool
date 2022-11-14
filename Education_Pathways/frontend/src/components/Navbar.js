@@ -68,7 +68,7 @@ export default class NavbarComp extends Component {
                 </Nav.Link>
 
                 <Nav.Link as={Link} to="/course_graph">
-                  Course Graph
+                  Course Graph (Beta Feature)
                 </Nav.Link>
               </Nav>
             </Navbar.Collapse>
