@@ -3,6 +3,7 @@ import pytest
 from index import app
 import json
 
+# Written by R.Yang
 @pytest.mark.parametrize("course_code, rating, reset_rating, expected_avg_rating", [
                                                                            ("TESTCOURSE", None, True, None),
                                                                            ("TESTCOURSE", 1, False, 1),
