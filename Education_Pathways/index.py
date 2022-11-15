@@ -8,7 +8,6 @@ from flask import Flask, send_from_directory, jsonify, request
 from flask_restful import Api,Resource, reqparse
 
 df = pd.read_csv("resources/courses.csv")
-# df_certificate = pd.read_csv("resources/course_certificate.csv")
 df_hss = pd.read_csv("resources/hss_data.csv")
 df_cs = pd.read_csv("resources/cs_data.csv")
 df_cs_exceptions = pd.read_csv("resources/cs_exceptions_data.csv")
@@ -23,9 +22,6 @@ app = Flask(__name__, static_folder='frontend/build')
 app.config['ENV'] = 'development'
 app.config['DEBUG'] = True
 app.config['TESTING'] = True
-# MongoDB URI
-# DB_URI = "mongodb+srv://Cansin:cv190499@a-star.roe6s.mongodb.net/A-Star?retryWrites=true&w=majority"
-# app.config["MONGODB_HOST"] = DB_URI
 
 config.init_app(app)
 config.init_db(app)
