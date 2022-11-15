@@ -83,31 +83,33 @@ class SearchResultDisplay extends Component{
 
   render(){
     return (
-      <div className="SearchQuery">
-        <div style={{ marginTop: "10%" }}>
-            <h1> Education Pathways Plus</h1>
-            <br></br>
-            <form onSubmit={this.handleSubmit} className={"search"}>
-                <input placeholder={"Search for course code"} className={"text-input"} type="text" value={this.state.input} onChange={this.handleChange} />
-                <input type="submit" value="Search" className={"submit-button"}/>
-            </form>
-        </div>
+      <div className='bg' style={{ backgroundImage: `url("/ut-bg-min.jpg")`}}>
+        <div className="SearchQuery">
+          <div style={{ marginTop: "10%" }}>
+              <h1> Education Pathways Plus</h1>
+              <br></br>
+              <form onSubmit={this.handleSubmit} className={"search"}>
+                  <input placeholder={"Search for course code"} className={"text-input"} type="text" value={this.state.input} onChange={this.handleChange} />
+                  <input type="submit" value="Search" className={"submit-button"}/>
+              </form>
+          </div>
 
-        <div className={"search-result-display"} >
-            {this.state.results}
+          <div className={"search-result-display"} >
+              {this.state.results}
+          </div>
+          <ToastContainer
+              position="top-center"
+              autoClose={5000}
+              limit={1}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"/>
         </div>
-        <ToastContainer
-            position="top-center"
-            autoClose={5000}
-            limit={1}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"/>
       </div>
     );
   }
