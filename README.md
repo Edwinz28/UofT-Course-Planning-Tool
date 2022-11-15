@@ -63,18 +63,11 @@ Change the proxy link in `package.json` and run `docker compose up` to build, (r
 ```bash
 // Part of Education_Pathways/frontend/package.json
 "private": true,
-<<<<<<< HEAD
 "proxy": "http://host.docker.internal:5000/",
-=======
-"proxy": "http://host.docker.internal:5050/",
->>>>>>> 6b5bfa36a9a8fae1d1b2b9b13452e6573207ed36
 # Under the root directory
 docker compose up --build
 ```
 
-<<<<<<< HEAD
-## 
-=======
 ## Deployment to Heroku
 
 The webapp can be deployed to heroku (before November 28th) via the following commands. An important note that one should make sure to run `npm build` to update the build folder before pushing to heroku. Pushing without doing so will result in an outdated or broken deployed app.
@@ -87,5 +80,3 @@ heroku create your-unique-name
 heroku git:remote -a your-unique-name
 git push heroku main
 ```
-
->>>>>>> 6b5bfa36a9a8fae1d1b2b9b13452e6573207ed36
