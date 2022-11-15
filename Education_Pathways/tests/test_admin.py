@@ -2,6 +2,7 @@ import pytest
 from index import app
 import json
 
+# Written by E.Zhang
 @pytest.mark.parametrize("code, name, desc, prereq, excl, coreq, department, div",
     [("TESTCOURSE1", "Software Engineering", "Sample desc", "FOO444H1", "BAR444H1", "COREQ444H1", "Engineering", "Division")])
 def test_update_info(code, name, desc, prereq, excl, coreq, department, div):
@@ -12,6 +13,7 @@ def test_update_info(code, name, desc, prereq, excl, coreq, department, div):
     # No error message
     assert('error' not in resp_data)
 
+# Written by E.Zhang
 @pytest.mark.parametrize("code, name, desc, prereq, excl, coreq, department, div, idCode",
     [("bad course code", "Software Engineering", "Sample desc", "FOO444H1", "BAR444H1", "COREQ444H1", "Engineering", "Division", "bad course code"),
     ("TESTCOURSE1", "Software Engineering", "Sample desc", "FOO444H1", "BAR444H1", "COREQ444H1", "Engineering", "Division", "TESTCOURSE2")])

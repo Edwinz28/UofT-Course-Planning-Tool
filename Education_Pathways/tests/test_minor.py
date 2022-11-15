@@ -4,6 +4,7 @@ from index import app
 
 from distutils.util import strtobool
 
+# Written by G.Jiang
 @pytest.mark.parametrize("course_code, expected_resp",
 [("APS360", "Artificial Intelligence Engineering Minor"),
  ("ECE472", "Engineering Business Minor")])
