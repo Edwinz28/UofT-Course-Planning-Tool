@@ -2,12 +2,11 @@ import pytest
 import json
 from index import app
 
-from distutils.util import strtobool
 
 # Written by G.Jiang
 @pytest.mark.parametrize("course_code, expected_resp",
-[("APS360", "Artificial Intelligence Engineering Minor"),
- ("ECE472", "Engineering Business Minor")])
+                         [("APS360", "Artificial Intelligence Engineering Minor"),
+                          ("ECE472", "Engineering Business Minor")])
 def test_minor(course_code, expected_resp):
     tester = app.test_client()
     resp = tester.get(f"/searchc?input={course_code}")

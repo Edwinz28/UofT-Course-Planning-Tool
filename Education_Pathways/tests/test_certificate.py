@@ -2,12 +2,13 @@ import pytest
 import json
 from index import app
 
-from distutils.util import strtobool
 
 # Written by G.Jiang
+
+
 @pytest.mark.parametrize("course_code, expected_resp",
-[("APS360", "Artificial Intelligence Engineering Certificate"),
- ("ECE472", "Engineering Business Certificate")])
+                         [("APS360", "Artificial Intelligence Engineering Certificate"),
+                          ("ECE472", "Engineering Business Certificate")])
 def test_certificate(course_code, expected_resp):
     tester = app.test_client()
     resp = tester.get(f"/searchc?input={course_code}")

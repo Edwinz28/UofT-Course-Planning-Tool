@@ -2,10 +2,10 @@
 import os
 import json
 import pandas as pd
+import config
 
-import pickle
 from flask import Flask, send_from_directory, jsonify, request
-from flask_restful import Api,Resource, reqparse
+from flask_restful import Api, Resource, reqparse
 
 df = pd.read_csv("resources/courses.csv")
 df_hss = pd.read_csv("resources/hss_data.csv")
@@ -17,7 +17,7 @@ with open('resources/user_reviews.json') as json_file:
 with open('resources/user_ratings.json') as json_file:
     course_ratings_dict = json.load(json_file)
 
-import config
+
 app = Flask(__name__, static_folder='frontend/build')
 app.config['ENV'] = 'development'
 app.config['DEBUG'] = True
@@ -37,6 +37,7 @@ def search_course_by_code(s):
     if len(course_ids) > 10:
         course_ids = course_ids[:10]
     res = []
+
     def parse_courses(courses):
         # Parses "['mycourse1', 'mycourse2'...]"" from .csv into "mycourse1, mycourse2"
         char_filter = "'[]"
@@ -61,20 +62,22 @@ def search_course_by_code(s):
         res.append(res_d)
     return res
 
+
 class UserRatings(Resource):
     def __update_json(self):
         with open("resources/user_ratings.json", "w") as write_file:
             json.dump(course_ratings_dict, write_file, indent=4)
-    
+
     def reset_rating(self, course_code):
         course_ratings_dict[course_code]["average_rating"] = {}
         self.__update_json()
-        
+
     def get(self):
         course_code = request.args.get('course_code')
         rating_details = course_ratings_dict.get(course_code, None)
         if rating_details is None:
-            resp = jsonify({'error': f"No entry for the queried course code {course_code}"})
+            resp = jsonify(
+                {'error': f"No entry for the queried course code {course_code}"})
             resp.status_code = 400
             return resp
 
@@ -83,7 +86,8 @@ class UserRatings(Resource):
             resp.status_code = 200
             return resp
         else:
-            curr_avg_rating = float(course_ratings_dict[course_code]["average_rating"])
+            curr_avg_rating = float(
+                course_ratings_dict[course_code]["average_rating"])
             resp = jsonify({'avg_rating': curr_avg_rating, 'msg': "OK"})
             resp.status_code = 200
             return resp
@@ -93,17 +97,21 @@ class UserRatings(Resource):
         rating = float(request.args.get('rating'))
         rating_details = course_ratings_dict.get(course_code, None)
         if rating_details is None:
-            resp = jsonify({'avg_rating': None, 'error': f"No entry for the queried course code {course_code}"})
+            resp = jsonify(
+                {'avg_rating': None, 'error': f"No entry for the queried course code {course_code}"})
             resp.status_code = 400
             return resp
-        
+
         if rating_details.get("average_rating", None) is None:
             course_ratings_dict[course_code]["average_rating"] = rating
             course_ratings_dict[course_code]["number_of_ratings"] = 1
         else:
-            curr_avg_rating = float(course_ratings_dict[course_code]["average_rating"])
-            curr_num_of_ratings = int(course_ratings_dict[course_code]["number_of_ratings"])
-            course_ratings_dict[course_code]["average_rating"] = round((curr_avg_rating*curr_num_of_ratings + rating)/(curr_num_of_ratings+1), 2)
+            curr_avg_rating = float(
+                course_ratings_dict[course_code]["average_rating"])
+            curr_num_of_ratings = int(
+                course_ratings_dict[course_code]["number_of_ratings"])
+            course_ratings_dict[course_code]["average_rating"] = round(
+                (curr_avg_rating*curr_num_of_ratings + rating)/(curr_num_of_ratings+1), 2)
             course_ratings_dict[course_code]["number_of_ratings"] = curr_num_of_ratings + 1
 
         self.__update_json()
@@ -117,6 +125,7 @@ class UserRatings(Resource):
             resp = jsonify({'data': None, 'error': str(e)})
             resp.status_code = 400
             return resp
+
 
 class UserReviews(Resource):
     def __update_json(self):
@@ -136,10 +145,11 @@ class UserReviews(Resource):
                 resp.status_code = 400
                 return resp
         else:
-            resp = jsonify({'error': f"No entry for the queried course code {course_code}"})
+            resp = jsonify(
+                {'error': f"No entry for the queried course code {course_code}"})
             resp.status_code = 400
             return resp
-    
+
     def post(self):
         user_name = request.args.get('user_name')
         review = request.args.get('review')
@@ -147,23 +157,24 @@ class UserReviews(Resource):
         if user_name is None:
             resp = jsonify({'error': f"Key 'user_name' not specified"})
             resp.status_code = 400
-            return resp    
+            return resp
         elif review is None:
             resp = jsonify({'error': f"Key 'review' not specified"})
             resp.status_code = 400
             return resp
         elif course_reviews_dict.get(course_code, None) is not None:
-            course_reviews_dict[course_code].append({"name": user_name, 
+            course_reviews_dict[course_code].append({"name": user_name,
                                                      "review": review})
             self.__update_json()
             resp = jsonify({'result': f'User review added to {course_code}'})
             resp.status_code = 200
             return resp
         else:
-            resp = jsonify({'error': f'Course code does not exist {course_code}'})
+            resp = jsonify(
+                {'error': f'Course code does not exist {course_code}'})
             resp.status_code = 400
-            return resp            
-            
+            return resp
+
 
 class HssEligibility(Resource):
     def __is_course_hss(self, course_code):
@@ -182,6 +193,7 @@ class HssEligibility(Resource):
             resp.status_code = 400
             return resp
 
+
 class CheckAdminPW(Resource):
     def __is_match(self, pw):
         # Note this much serves as a proof of concept
@@ -199,14 +211,17 @@ class CheckAdminPW(Resource):
             resp.status_code = 400
             return resp
 
+
 class CsEligibility(Resource):
     def __is_course_cs(self, course_code):
         courses = set(df_cs["colummn"])
         course_exceptions = set(df_cs_exceptions["colummn"])
         for course in courses:
             if course in course_code:
-                if course_code not in course_exceptions: return True
-                else: break
+                if course_code not in course_exceptions:
+                    return True
+                else:
+                    break
         return False
 
     def get(self):
@@ -220,6 +235,7 @@ class CsEligibility(Resource):
             resp = jsonify({'error': str(e)})
             resp.status_code = 400
             return resp
+
 
 class UpdateCourseInfo(Resource):
     def __update_csv(self, id, course_code, course_name, description, prereq, coreq, exclusions, department, division):
@@ -242,17 +258,20 @@ class UpdateCourseInfo(Resource):
         id_code = request.args.get('idCode')
         id = df.index[df['Code'] == id_code].tolist()
         if len(id) == 0:
-            resp = jsonify({'error': 'Could not find course code in database.'})
+            resp = jsonify(
+                {'error': 'Could not find course code in database.'})
             resp.status_code = 200
             return resp
         elif len(id) > 1:
-            resp = jsonify({'error': 'Found multiple entries in database with same code'})
+            resp = jsonify(
+                {'error': 'Found multiple entries in database with same code'})
             resp.status_code = 200
             return resp
         course_code = request.args.get('course_code')
         # If we change the course code we need to not overwrite another course
         if id_code != course_code and len(df.index[df['Code'] == course_code].tolist()) != 0:
-            resp = jsonify({'error': 'Cannot change course code as it already exists!'})
+            resp = jsonify(
+                {'error': 'Cannot change course code as it already exists!'})
             resp.status_code = 200
             return resp
 
@@ -263,11 +282,13 @@ class UpdateCourseInfo(Resource):
         department = request.args.get('department')
         division = request.args.get('division')
         coreq = request.args.get('coreq')
-        self.__update_csv(id[0], course_code, course_name, description, prereq, coreq, exclusions, department, division)
+        self.__update_csv(id[0], course_code, course_name, description,
+                          prereq, coreq, exclusions, department, division)
 
         resp = jsonify({'msg': 'Successfully Updated Course Information'})
         resp.status_code = 200
         return resp
+
 
 class SearchCourse(Resource):
     def get(self):
@@ -299,6 +320,7 @@ class SearchCourse(Resource):
                 resp.status_code = 400
                 return resp
 
+
 class ShowCourse(Resource):
     def get(self):
         code = request.args.get('code')
@@ -316,7 +338,7 @@ class ShowCourse(Resource):
             resp = jsonify({'error': 'something went wrong'})
             resp.status_code = 400
             return resp
-    
+
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('code', required=True)
@@ -336,6 +358,7 @@ class ShowCourse(Resource):
             resp.status_code = 400
             return resp
 
+
 # API Endpoints
 rest_api = Api(app)
 rest_api.add_resource(SearchCourse, '/searchc')
@@ -347,6 +370,7 @@ rest_api.add_resource(HssEligibility, '/check/hss')
 rest_api.add_resource(CsEligibility, '/check/cs')
 rest_api.add_resource(CheckAdminPW, '/admin/auth')
 
+
 @app.route("/", defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
@@ -354,7 +378,6 @@ def serve(path):
         return send_from_directory(app.static_folder, path)
     else:
         return send_from_directory(app.static_folder, 'index.html')
-
 
 
 if __name__ == '__main__':
@@ -365,6 +388,3 @@ if __name__ == '__main__':
     # for i in range(75):
     #     i = str(i)
     #     Course(name=data["name"][i], code=data["code"][i], description=data["description"][i], prereq=data["prereq"][i], coreq=data["coreq"][i], exclusion=data["exclusion"][i]).save()
-
-    
-    
