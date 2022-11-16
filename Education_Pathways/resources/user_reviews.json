@@ -1868,36 +1868,7 @@
     "PMU352Y1": [],
     "ECE454H1": [],
     "CLA101H5": [],
-    "ECE444H1": [
-        {
-            "name": "BOT",
-            "review": "The best course ever!"
-        },
-        {
-            "name": "BOT",
-            "review": "None"
-        },
-        {
-            "name": "None",
-            "review": "The project 1 is very in-depth."
-        },
-        {
-            "name": "BOT",
-            "review": "The best course ever!"
-        },
-        {
-            "name": "BOT",
-            "review": "None"
-        },
-        {
-            "name": "None",
-            "review": "The project 1 is very in-depth."
-        },
-        {
-            "name": "BOT",
-            "review": "The best course ever!"
-        }
-    ],
+    "ECE444H1": [],
     "AER302H1": [],
     "PSY406H5": [],
     "GGRD30H3": [],
@@ -4734,30 +4705,6 @@
         {
             "name": "James",
             "review": "I didn't really like this course"
-        },
-        {
-            "name": "BOT",
-            "review": "I Love this course"
-        },
-        {
-            "name": "BOT",
-            "review": "I Love this course"
-        },
-        {
-            "name": "BOT",
-            "review": "I Love this course"
-        },
-        {
-            "name": "BOT",
-            "review": "I Love this course"
-        },
-        {
-            "name": "BOT",
-            "review": "I Love this course"
-        },
-        {
-            "name": "BOT",
-            "review": "I Love this course"
         }
     ]
 }
