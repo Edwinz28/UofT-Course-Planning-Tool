@@ -6,6 +6,8 @@ While this project broadly serves as a proof of concept rather than a finished p
 
 Any feedback is welcomed and can be sent to rickyjr.yang@mail.utoronto.ca.
 
+**For TA's:** The team's commit history is on the `dev` branch.
+
 ## Running Locally
 
 The project is split into a frontend `reactjs` and a backend `flask` server.
