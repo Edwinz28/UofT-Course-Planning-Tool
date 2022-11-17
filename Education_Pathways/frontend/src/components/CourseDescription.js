@@ -75,7 +75,7 @@ class CourseDescriptionPage extends Component {
   handleSubmit(event) {
     event.preventDefault()
     API.post(`/course/reviews?course_code=${this.state.course_code}&user_name=${this.state.reviewer_name}&review=${this.state.review}`)
-    window.location.reload(false)
+      .then(window.location.reload(false))
   }
   
   componentDidMount() {
