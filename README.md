@@ -6,6 +6,8 @@ While this project broadly serves as a proof of concept rather than a finished p
 
 Any feedback is welcomed and can be sent to rickyjr.yang@mail.utoronto.ca.
 
+Our `dev` branch is where we add our code to and is not set to be run within a docker container and runs locally to simplify the workflow for the devleoper. Our `main` branch contains our production facing code which is deployed to Heroku.
+
 ## Running Locally
 
 The project is split into a frontend `reactjs` and a backend `flask` server.
